@@ -1,32 +1,21 @@
 //react-redux store에서 SideContainer 으로 정보 받아오기
-import {connect} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import SideContainer from '../component/Container/SideController/SideContainer';
 import { changeCurrentMusic, changeCurrentPlaylist } from '../modules/musicController';
 
-const SideContainerContainer = ({currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic}) =>{
+const SideContainerContainer = () =>{
+  const currentPlaylist = useSelector(({musicController})=> musicController.currentPlaylist);//useSelector로 상태조회
+  const currentMusic = useSelector(({musicController})=> musicController.currentMusic);//useDispatch로 액션 디스패치
+  const dispatch = useDispatch();
+
   return (
     <SideContainer
       currentPlaylist={currentPlaylist}
       currentMusic={currentMusic}
-      onCurrentPlaylist={onCurrentPlaylist}
-      onCurrentMusic={onCurrentMusic} 
+      onCurrentPlaylist={()=>dispatch(changeCurrentPlaylist())}
+      onCurrentMusic={()=>dispatch(changeCurrentMusic())} 
      />
   );
 };
 
-const mapStateToProps = ({musicController}) => ({
-  currentPlaylist : musicController.currentPlaylist,
-  currentMusic : musicController.currentMusic,
-})
-const mapDispatchToProps = (dispatch) => ({
-  onCurrentPlaylist : () =>{
-    dispatch(changeCurrentPlaylist());
-  },
-  onCurrentMusic : () =>{
-    dispatch(changeCurrentMusic());
-  },
-});
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(SideContainerContainer);
+export default SideContainerContainer;

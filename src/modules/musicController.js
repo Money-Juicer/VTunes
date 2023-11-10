@@ -1,5 +1,5 @@
 //reducer
-//action설정
+//action 설정
 const SET_PLAYLIST = 'musicController/SET_PLAYLIST';
 const SET_MUSIC = 'musicController/SET_MUSIC';
 const PREVIOUS_MUSIC = 'musicController/PREVIOUS_MUSIC';
@@ -7,7 +7,7 @@ const NEXT_MUSIC = 'musicController/NEXT_MUSIC';
 const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
 
-//컴포넌트들에서 호출될 함수들
+//컴포넌트들에서 dispatch될 액션들
 export const changeCurrentPlaylist = playlist => ({
   type : SET_PLAYLIST,
   playlist
@@ -53,7 +53,7 @@ const initialState = {
   shuffleStatus : shuffleStatus.SHUFFLE_OFF,
 }
 
-
+//reducer function
 function musicController(state = initialState, action){
   var currentPlaylist;
   var currentMusic;
