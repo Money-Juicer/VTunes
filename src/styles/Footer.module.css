@@ -1,0 +1,11 @@
+.footer{
+  position: relative;
+  height: 150px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  background-color: #D9D9D9;
+  outline: 2px solid black;/*임시*/
+
+}

@@ -1,0 +1,41 @@
+.adder-wrapper{
+  position: relative;
+  width: 65%;
+  height: 100%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  outline: 2px solid black;/*임시*/
+}
+
+.button-area{
+  position: absolute;
+  width: 100%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.adder{
+  position: absolute;
+  left: 18px;
+  width: 20%;
+  height: 100%;
+}
+.adder img{
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
+.remover{
+  position: absolute;
+  left: 92px;
+  width: 20%;
+  height: 100%;
+}
+.remover img{
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down;
+}
