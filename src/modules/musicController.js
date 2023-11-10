@@ -1,3 +1,4 @@
+//reducer
 //action설정
 const SET_PLAYLIST = 'musicController/SET_PLAYLIST';
 const SET_MUSIC = 'musicController/SET_MUSIC';

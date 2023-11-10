@@ -1,3 +1,4 @@
+//react-redux store에서 SideContainer 으로 정보 받아오기
 import {connect} from 'react-redux';
 import SideContainer from '../component/Container/SideController/SideContainer';
 import { changeCurrentMusic, changeCurrentPlaylist } from '../modules/musicController';
