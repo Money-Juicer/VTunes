@@ -1,12 +1,13 @@
 import React from "react";
 import styles from "../../../../../styles/TimerSetting.module.css";
+import timer from "../../../../../assets/images/timer.png";
 
 const TimerSetting = () =>{
   return (
     <div className={styles["timer-setting"]}>
       <div className={styles["timer"]}>
         <img 
-          src={process.env.PUBLIC_URL + "/images/timer.png"}
+          src={timer}
           alt="timer"
         />
       </div>

@@ -12,6 +12,9 @@ const SideController = () =>{
   const [isPlaylistMenuClick, handleIsPlaylistMenuClick] = useIconClick();
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   
+  const handleIsDeleteClick = () =>{
+    setIsDeleteClick(prev=>!prev);
+  }
 
   return (
     <div className={styles["side-controller"]}>
@@ -20,7 +23,11 @@ const SideController = () =>{
         onPlMenuClick = {handleIsPlaylistMenuClick} 
         searchResult = {searchResult} 
       />
-      {!isPlaylistMenuClick ? (<SideContainerContainer />):(<PlaylistSet />)}
+      {!isPlaylistMenuClick ? (
+          <SideContainerContainer isDeleteClick= {isDeleteClick} onIsDeleteClick={handleIsDeleteClick}/>
+        ):(
+          <PlaylistSet />
+        )}
     </div>
   );
 };

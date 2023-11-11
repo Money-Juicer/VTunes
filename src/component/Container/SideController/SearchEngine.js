@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import styles from "../../../styles/SearchEngine.module.css";
-
+import search from '../../../assets/images/search.png';
+import plMenu from '../../../assets/images/playlist_menu.png';
 const SearchEngine = ({isPlMenuClick, onPlMenuClick, searchResult}) =>{
   const [userInput, setUserInput] = useState("");
   
@@ -18,9 +19,8 @@ const SearchEngine = ({isPlMenuClick, onPlMenuClick, searchResult}) =>{
     <div className={styles["search-engine-wrapper"]}>
       <div className={styles["search-engine-area"]}>
       {!isPlMenuClick && (
-          <>
+          <div className={styles["search-engine"]}>
             <input
-              className={styles["search-engine"]}
               type="text"
               placeholder="            Search Music in Playlist"
               value={userInput}
@@ -28,18 +28,20 @@ const SearchEngine = ({isPlMenuClick, onPlMenuClick, searchResult}) =>{
               onKeyDown={handleKeyDown}
             />
             {!userInput && (
-              <img
-                className={styles["search-icon"]}
-                src={process.env.PUBLIC_URL + "/images/search.png"}
-                alt="search"
-              />
+              <div className={styles["search-icon"]}>
+                <img
+                  src={search}
+                  alt="search"
+                />
+              </div>
+
             )}
-          </>
+          </div>
         )}
       </div>
       <div className={styles["playlist-menu"]} onClick={onPlMenuClick}>
         <img 
-        src={process.env.PUBLIC_URL +(isPlMenuClick ? "/images/playlist_menu.png" : "/images/playlist_menu.png")}
+        src={plMenu}
         alt="playlistMenu"
         />
       </div>

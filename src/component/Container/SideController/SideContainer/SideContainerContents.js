@@ -1,20 +1,120 @@
-import React from "react";
+import React, {useState} from "react";
+import ScrollList from "../../../common/ScrollList/ScrollList";
 import styles from "../../../../styles/SideContainerContents.module.css";
+import { useSelector } from "react-redux";
 
-const SideContainerContents = ({currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic}) =>{
+const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic,isDeleteClick}) => {
+  const [deleteChosenMusic, setDeleteChosenMusic] = useState(-1);
+
+  const handleDeleteChosenMusic = (musicId) =>{
+    setDeleteChosenMusic(musicId);
+    console.log("삭제클릭:"+musicId);
+  }
+  
+  const curPlaylist = {//임시 테스트용
+    musics: [
+      {
+        musicId: 1,
+        musicName: "아뤼스트",
+        lyrics: "는 인생이 예술이어야 한다",
+        artist: "김영현",
+        albumTitle: "음잘알 앨범",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 2,
+        musicName: "아뤼스트2",
+        lyrics: "는 인생이 예술이어야 한다2",
+        artist: "김영현2",
+        albumTitle: "음잘알 앨범2",
+        duration: "2:23",
+        sourceOfPath: "/images/baby.jpg",
+      },
+      {
+        musicId: 3,
+        musicName: "아뤼스트",
+        lyrics: "는 인생이 예술이어야 한다",
+        artist: "김영현",
+        albumTitle: "음잘알 앨범",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 4,
+        musicName: "아뤼스트2",
+        lyrics: "는 인생이 예술이어야 한다2",
+        artist: "김영현2",
+        albumTitle: "음잘알 앨범2",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 5,
+        musicName: "아뤼스트",
+        lyrics: "는 인생이 예술이어야 한다",
+        artist: "김영현",
+        albumTitle: "음잘알 앨범",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 6,
+        musicName: "아뤼스트2",
+        lyrics: "는 인생이 예술이어야 한다2",
+        artist: "김영현2",
+        albumTitle: "음잘알 앨범2",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 7,
+        musicName: "아뤼스트",
+        lyrics: "는 인생이 예술이어야 한다",
+        artist: "김영현",
+        albumTitle: "음잘알 앨범",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+      {
+        musicId: 8,
+        musicName: "아뤼스트2",
+        lyrics: "는 인생이 예술이어야 한다2",
+        artist: "김영현2",
+        albumTitle: "음잘알 앨범2",
+        duration: "2:23",
+        sourceOfPath: "/images/newjeans.gif",
+      },
+    ],
+  };
+
   return (
     <div className={styles["side-container-contents"]}>
-      <div className={styles["music-wrapper"]}>
-        <div>
-          앨범 이미지
-        </div>
-        <div>
-          곡제목+artist
-        </div>
-        <div>
-          duration
-        </div>
-      </div>
+      <ScrollList>
+        {curPlaylist.musics.map((musicData) => (
+          <div key={musicData.musicId} className={styles["music-wrapper"]}>
+            <div className={styles["delete-button-area"]}>
+              {isDeleteClick&&(
+                <button onClick={()=>handleDeleteChosenMusic(musicData.musicId)}>삭제</button>
+              )}
+            </div>
+            <div className={styles["music-album"]}>
+              <img src={musicData.sourceOfPath} alt="앨범 이미지" />
+            </div>
+            <div className={styles["music-info"]}>
+              <div className={styles["name"]}>
+                <span>{musicData.musicName}</span>
+              </div>
+              <div className={styles["artist"]}>
+                <span>{musicData.artist}</span>
+              </div>
+            </div>
+            <div className={styles["music-duration"]}>
+              <span>{musicData.duration}</span>
+            </div>
+          </div>
+        ))}
+      </ScrollList>
     </div>
   );
 };
