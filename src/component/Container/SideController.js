@@ -4,16 +4,18 @@ import SearchEngine from "./SideController/SearchEngine";
 import PlaylistSet from "./SideController/PlaylistSet";
 
 import SideContainerContainer from "../../containers/SideContainerContainer";
-import useIconClick from "../../hooks/useIconClick";
 
 const SideController = () =>{
   const [searchResult, setSearchResult] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
-  const [isPlaylistMenuClick, handleIsPlaylistMenuClick] = useIconClick();
+  const [isPlaylistMenuClick, setIsPlaylistMenuClick] = useState(false);
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   
   const handleIsDeleteClick = () =>{
     setIsDeleteClick(prev=>!prev);
+  }
+  const handleIsPlaylistMenuClick = () =>{
+    setIsPlaylistMenuClick(prev=>!prev);
   }
 
   return (
