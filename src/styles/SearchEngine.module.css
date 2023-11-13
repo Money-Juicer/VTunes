@@ -1,19 +1,31 @@
-/*Container-SideController-SearchEngine*/
+/* Container-SideController-SearchEngine */
 
-.search-engine-wrapper{
+.search-engine-wrapper {
   position: relative;
-  width:100%;
+  width: 100%;
   height: 10%;
 
   display: flex;
   justify-content: flex-start;
   align-items: center;
 
+  background-color: #F0E8E8;
+}
+.search-engine-wrapper-active {
+  position: absolute;
+  width: 100%;
+  height: 10%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  background-color: #d9d9d9;
 }
 
-.search-engine-area{
+.search-engine-area {
   position: relative;
-  width: 90%;
+  width: 88%;
   height: 100%;
 
   display: flex;
@@ -21,8 +33,7 @@
   align-items: center;
 }
 
-
-.search-engine{
+.search-engine {
   position: relative;
   width: 80%;
   height: 75%;
@@ -31,7 +42,8 @@
   justify-content: center;
   align-items: center;
 }
-.search-engine input{
+
+.search-engine input {
   width: 100%;
   height: 100%;
   max-height: 50px;
@@ -41,34 +53,38 @@
   border: transparent;
   border-radius: 20px;
 }
-.search-engine input::placeholder{
+
+.search-engine input::placeholder {
   color: #F0E8E8;
 }
+
 .search-icon {
   position: absolute;
   width: 30px;
   height: 30px;
   left: 20px;
 }
-.search-icon img{
-  width:100%;
-  height:100%;
+
+.search-icon img {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
-.playlist-menu{
-  position:relative;
-  width: 10%;
+.playlist-menu {
+  position: relative;
+  width: 12%;
   height: 100%;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  overflow:hidden;
+  z-index:2;
 }
-.playlist-menu img{
-  width: 100%;
-  height: 100%;
+
+.playlist-menu img {
+  width: 93%;
+  height: 93%;
   object-fit: scale-down;
 }

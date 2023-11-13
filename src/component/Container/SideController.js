@@ -25,11 +25,10 @@ const SideController = () =>{
         onPlMenuClick = {handleIsPlaylistMenuClick} 
         searchResult = {searchResult} 
       />
-      {!isPlaylistMenuClick ? (
-          <SideContainerContainer isDeleteClick= {isDeleteClick} onIsDeleteClick={handleIsDeleteClick}/>
-        ):(
+      {isPlaylistMenuClick && (
           <PlaylistSet />
-        )}
+      )}
+      <SideContainerContainer isDeleteClick= {isDeleteClick} onIsDeleteClick={handleIsDeleteClick}/>
     </div>
   );
 };

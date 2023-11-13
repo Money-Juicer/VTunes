@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import styles from "../../styles/Album.module.css";
+import ScrollList from "../common/ScrollList/ScrollList";
 
 const Album = ({currentMusic}) =>{
   const [isAlbumClick, setIsAlbumClick] = useState(false);
@@ -10,7 +11,7 @@ const Album = ({currentMusic}) =>{
     artist: "김영현2",
     albumTitle: "음잘알 앨범2",
     duration: "2:23",
-    sourceOfPath: "/images/baby.jpg",
+    sourceOfPath: "/images/newjeans.gif",
   }
   
   const toggleIsAlbumClick = () => {
@@ -26,7 +27,9 @@ const Album = ({currentMusic}) =>{
       {
         isAlbumClick ? (  
           <div className={styles.lyrics} onClick = {toggleIsAlbumClick}>
+            <ScrollList>
             {curMusic.lyrics}
+            </ScrollList>
           </div>
         ) : (
           <div className={styles["mini-album"]} onClick ={toggleIsAlbumClick}>
