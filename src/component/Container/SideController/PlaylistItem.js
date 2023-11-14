@@ -7,7 +7,7 @@ import plEnter from "../../../assets/base/plEnter.png";
 import plEnterHover from "../../../assets/hover/plEnter.png";
 import plEnterClick from "../../../assets/hover/plEnter.png";
 
-const PlaylistItem = ({ buttonFlag, key, playlistData}) => {
+const PlaylistItem = ({ buttonFlag, key, playlistData, onSelectedPlaylist}) => {
   const [imgDeleterClick, setImgDeleterClick] = useState(false);
   const [imgDeleterHover, setImgDeleterHover] = useState(false);
   const [imgPlEnterClick, setImgPlEnterClick] = useState(false);
@@ -43,6 +43,7 @@ const PlaylistItem = ({ buttonFlag, key, playlistData}) => {
             onClick={() => {
               setImgPlEnterClick(true);
               setTimeout(() => setImgPlEnterClick(false), 100);
+              onSelectedPlaylist(playlistData);
             }}
             onMouseEnter={() => setImgPlEnterHover(true)}
             onMouseLeave={() => setImgPlEnterHover(false)}

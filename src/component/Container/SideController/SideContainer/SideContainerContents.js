@@ -6,95 +6,20 @@ import deleter from "../../../../assets/base/deleter.png";
 import deleterHover from "../../../../assets/hover/deleter.png";
 import deleterClick from "../../../../assets/onClick/deleter.png";
 
-const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, isDeleteClick, isSearch, searchResult}) => {
+const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, 
+  isDeleteClick, isSearch, searchResult, selectedPlaylist}) => {
+    
   const [deleteChosenMusic, setDeleteChosenMusic] = useState(-1);
 
   const handleDeleteChosenMusic = (musicId) =>{
     setDeleteChosenMusic(musicId);
     console.log("삭제클릭:"+musicId);
   }
-  
-  const curPlaylist = {//임시 테스트용
-    musics: [
-      {
-        musicId: 1,
-        musicName: "아뤼스트",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 2,
-        musicName: "는인생이",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/baby.jpg",
-      },
-      {
-        musicId: 3,
-        musicName: "예술이어야",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 4,
-        musicName: "한다",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 5,
-        musicName: "짱영현",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 6,
-        musicName: "신영현",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 7,
-        musicName: "갓영현",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 8,
-        musicName: "만세",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-    ],
-  };
 
   //리액트에서 state나 props가 변경되면 재렌더링 : 검색엔진에서 userInput이 존재할경우 searchResult아니면 currentPlaylist
   const isNoSearchResult = isSearch && !searchResult.musics.length;
   const isSearchResultExist = isSearch && searchResult.musics.length;
-  const playlistToRender = isSearchResultExist ? searchResult : curPlaylist;
+  const playlistToRender = isSearchResultExist ? searchResult : selectedPlaylist;
   
   return (
     <div className={styles["side-container-contents"]}>

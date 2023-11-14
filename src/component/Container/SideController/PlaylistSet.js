@@ -3,7 +3,7 @@ import styles from "../../../styles/PlaylistSet.module.css";
 import ScrollList from "../../common/ScrollList/ScrollList";
 import PlaylistItem from "./PlaylistItem";
 
-const PlaylistSet = ({}) => {
+const PlaylistSet = ({onSelectedPlaylist}) => {
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   const [isAddClick, setIsAddClick] = useState(false);
   const [userInput, setUserInput] = useState("");
@@ -34,17 +34,17 @@ const PlaylistSet = ({}) => {
     width: "35%",
   };
 
-  const playlistSet = {//임시 테스트용
+  const playlistSet = {//임시 테스트용 나중엔 고쳐야됨
     playlists: [
       {
         pid: 0,
         numberOfMusic: 2,
         playlistName: "음잘알김영현의플레이리스트",
-        listOfMusic: 
+        musics: 
         [
           {
             musicId: 1,
-            musicName: "아뤼스트",
+            musicName: "갓영현",
             lyrics: "는 인생이 예술이어야 한다",
             artist: "김영현",
             albumTitle: "음잘알 앨범",
@@ -53,7 +53,7 @@ const PlaylistSet = ({}) => {
           },
           {
             musicId: 2,
-            musicName: "아뤼스트2",
+            musicName: "짱영현",
             lyrics: "는 인생이 예술이어야 한다2",
             artist: "김영현2",
             albumTitle: "음잘알 앨범2",
@@ -66,11 +66,11 @@ const PlaylistSet = ({}) => {
         pid: 1,
         numberOfMusic: 3,
         playlistName: "음악의신김영현찬양하라",
-        listOfMusic:
+        musics:
         [
           {
             musicId: 1,
-            musicName: "아뤼스트",
+            musicName: "신영현",
             lyrics: "는 인생이 예술이어야 한다",
             artist: "김영현",
             albumTitle: "음잘알 앨범",
@@ -79,7 +79,7 @@ const PlaylistSet = ({}) => {
           },
           {
             musicId: 2,
-            musicName: "아뤼스트2",
+            musicName: "영현신",
             lyrics: "는 인생이 예술이어야 한다2",
             artist: "김영현2",
             albumTitle: "음잘알 앨범2",
@@ -87,8 +87,8 @@ const PlaylistSet = ({}) => {
             sourceOfPath: "/images/baby.jpg",
           },        
           {
-            musicId: 2,
-            musicName: "아뤼스트2",
+            musicId: 3,
+            musicName: "나는신인가",
             lyrics: "는 인생이 예술이어야 한다2",
             artist: "김영현2",
             albumTitle: "음잘알 앨범2",
@@ -109,7 +109,7 @@ const PlaylistSet = ({}) => {
           <div className={styles["search-engine"]}>
             <input
               type="text"
-              placeholder=""
+              placeholder="       Enter the name for the New Playlist :)"
               value={userInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
@@ -130,7 +130,7 @@ const PlaylistSet = ({}) => {
         <ScrollList>
         {playlistSet.playlists.map((playlist) => (
           <div className={styles["playlist-wrapper"]} key={playlist.pid}>
-            <PlaylistItem buttonFlag = {isDeleteClick} playlistData={playlist} />
+            <PlaylistItem buttonFlag = {isDeleteClick} playlistData={playlist} onSelectedPlaylist={onSelectedPlaylist}/>
           </div>
         ))}
         </ScrollList>

@@ -11,7 +11,7 @@ const Album = ({currentMusic}) =>{
     artist: "김영현2",
     albumTitle: "음잘알 앨범2",
     duration: "2:23",
-    sourceOfPath: "/images/newjeans.gif",
+    sourceOfPath: "/images/baby.jpg",
   }
   
   const toggleIsAlbumClick = () => {

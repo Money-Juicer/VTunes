@@ -7,7 +7,7 @@ import plMenuHover from '../../../assets/hover/playlist_menu.png';
 import searchClick from '../../../assets/onClick/search.png';
 import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
-const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlaylist}) => {
+const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, selectedPlaylist}) => {
   const [userInput, setUserInput] = useState("");
   const [imgSearchClick, setImgSearchClick] = useState(false);
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
@@ -32,10 +32,15 @@ const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlayli
   };
 
   const filterPlaylist = () => {
-    const filtered = curPlaylist.musics.filter((music) =>
-      music.musicName.includes(userInput)
-    );
-    onSearchResult({musics: filtered}); // 필터된 배열을 콜백으로 전달
+    if(selectedPlaylist){
+      const filtered = selectedPlaylist.musics.filter((music) =>
+        music.musicName.includes(userInput)
+      );
+      onSearchResult({musics: filtered}); // 필터된 배열을 콜백으로 전달
+    }else{
+      onSearchResult({musics: []});
+    }
+
   };
 
   useEffect(() => {
@@ -43,82 +48,6 @@ const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlayli
     filterPlaylist();
   }, [userInput]);
 
-  const curPlaylist = {//임시 테스트용
-    musics: [
-      {
-        musicId: 1,
-        musicName: "아뤼스트",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 2,
-        musicName: "는인생이",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/baby.jpg",
-      },
-      {
-        musicId: 3,
-        musicName: "예술이어야",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 4,
-        musicName: "한다",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 5,
-        musicName: "짱영현",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 6,
-        musicName: "신영현",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 7,
-        musicName: "갓영현",
-        lyrics: "는 인생이 예술이어야 한다",
-        artist: "김영현",
-        albumTitle: "음잘알 앨범",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-      {
-        musicId: 8,
-        musicName: "만세",
-        lyrics: "는 인생이 예술이어야 한다2",
-        artist: "김영현2",
-        albumTitle: "음잘알 앨범2",
-        duration: "2:23",
-        sourceOfPath: "/images/newjeans.gif",
-      },
-    ],
-  };
 
   return (
     <div className={styles["search-engine-wrapper"]}>
