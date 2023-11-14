@@ -1,6 +1,7 @@
 import React,{useState} from "react";
 import styles from "../../../styles/PlaylistSet.module.css";
 import ScrollList from "../../common/ScrollList/ScrollList";
+import PlaylistItem from "./PlaylistItem";
 
 const PlaylistSet = ({}) => {
   const [isDeleteClick, setIsDeleteClick] = useState(false);
@@ -128,29 +129,12 @@ const PlaylistSet = ({}) => {
       <div className={styles["playlist-set"]}>
         <ScrollList>
         {playlistSet.playlists.map((playlist) => (
-          <div className={styles["playlist-wrapper"]}>
-            <div className={styles["delete-button-area"]}>
-              {isDeleteClick&&(
-                <button onClick={()=>handleDeleteChosenPl(playlist.pid)}>삭제</button>
-              )}
-            </div>
-            <div className={styles["playlist-info"]}>
-              <div className={styles["name"]}>
-                {playlist.playlistName}
-              </div>
-              <div className={styles["songs-count"]}>
-                {playlist.numberOfMusic}ㆍSongs
-              </div>
-            </div>
-            <div className={styles["view-playlist"]}>
-              화살표
-            </div>
+          <div className={styles["playlist-wrapper"]} key={playlist.pid}>
+            <PlaylistItem buttonFlag = {isDeleteClick} playlistData={playlist} />
           </div>
         ))}
         </ScrollList>
       </div>
-
-
     </div>
   );
 };

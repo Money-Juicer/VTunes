@@ -4,8 +4,7 @@ import SideContainerHeader from "./SideContainer/SideContainerHeader";
 import SideContainerContents from "./SideContainer/SideContainerContents";
 import SideContainerFooter from "./SideContainer/SideContainerFooter";
 
-const SideContainer = ({currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, 
-    isDeleteClick, onIsDeleteClick, isSearch, searchResult}) =>{
+const SideContainer = ({currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, isDeleteClick, onIsDeleteClick, isSearch, searchResult}) =>{
   return (
     <div className={styles["side-container"]}>
       <SideContainerHeader currentPlaylist={currentPlaylist} />

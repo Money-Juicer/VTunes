@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import ScrollList from "../../../common/ScrollList/ScrollList";
+import MusicItem from "./MusicItem";
 import styles from "../../../../styles/SideContainerContents.module.css";
-import { useSelector } from "react-redux";
+import deleter from "../../../../assets/base/deleter.png";
+import deleterHover from "../../../../assets/hover/deleter.png";
+import deleterClick from "../../../../assets/onClick/deleter.png";
 
 const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, isDeleteClick, isSearch, searchResult}) => {
   const [deleteChosenMusic, setDeleteChosenMusic] = useState(-1);
@@ -103,29 +106,12 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
             </div>
           )
         }
-        {!isNoSearchResult && playlistToRender.musics.map((musicData) => (
-          <div key={musicData.musicId} className={styles["music-wrapper"]}>
-            <div className={styles["delete-button-area"]}>
-              {isDeleteClick&&(
-                <button onClick={()=>handleDeleteChosenMusic(musicData.musicId)}>삭제</button>
-              )}
+        {!isNoSearchResult &&
+          playlistToRender.musics.map((musicData) => (
+            <div className={styles["music-wrapper"]} key = {musicData.musicId}>
+              <MusicItem buttonFlag = {isDeleteClick}  musicData={musicData} />
             </div>
-            <div className={styles["music-album"]}>
-              <img src={musicData.sourceOfPath} alt="앨범 이미지" />
-            </div>
-            <div className={styles["music-info"]}>
-              <div className={styles["name"]}>
-                <span>{musicData.musicName}</span>
-              </div>
-              <div className={styles["artist"]}>
-                <span>{musicData.artist}</span>
-              </div>
-            </div>
-            <div className={styles["music-duration"]}>
-              <span>{musicData.duration}</span>
-            </div>
-          </div>
-        ))}
+          ))}
       </ScrollList>
     </div>
   );

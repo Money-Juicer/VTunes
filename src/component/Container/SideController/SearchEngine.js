@@ -1,10 +1,21 @@
 import React, { useState, useEffect} from "react";
 import styles from "../../../styles/SearchEngine.module.css";
-import search from '../../../assets/images/search.png';
-import plMenu from '../../../assets/images/playlist_menu.png';
+import search from '../../../assets/base/search.png';
+import plMenu from '../../../assets/base/playlist_menu.png';
+import searchHover from '../../../assets/hover/search.png';
+import plMenuHover from '../../../assets/hover/playlist_menu.png';
+import searchClick from '../../../assets/onClick/search.png';
+import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
 const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlaylist}) => {
   const [userInput, setUserInput] = useState("");
+  const [imgSearchClick, setImgSearchClick] = useState(false);
+  const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
+  const [imgSearchHover, setImgSearchHover] = useState(false);
+  const [imgPlMenuHover, setImgPlMenuHover] = useState(false);
+  
+  const searchImage = imgSearchClick ? searchClick : imgSearchHover ? searchHover : search;
+  const plMenuImage = imgPlMenuClick ? plMenuClick : imgPlMenuHover ? plMenuHover : plMenu;
 
   const handleInputChange = (event) => {
     const inputText = event.target.value;
@@ -123,8 +134,14 @@ const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlayli
           {!userInput && (
             <div className={styles["search-icon"]}>
               <img
-                src={search}
+                src={searchImage}
                 alt="search"
+                onClick={() => {
+                  setImgSearchClick(prev=>!prev);
+                  setTimeout(() => setImgSearchClick(false), 200);
+                }}
+                onMouseEnter={() => setImgSearchHover(true)}
+                onMouseLeave={() => setImgSearchHover(false)}
               />
             </div>
           )}
@@ -132,8 +149,14 @@ const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, currentPlayli
       </div>
       <div className={styles["playlist-menu"]} onClick={onPlMenuClick}>
         <img
-          src={plMenu}
+          src={plMenuImage}
           alt="playlistMenu"
+          onClick={() => {
+            setImgPlMenuClick(true);
+            setTimeout(() => setImgPlMenuClick(false), 100);
+          }}
+          onMouseEnter={() => setImgPlMenuHover(true)}
+          onMouseLeave={() => setImgPlMenuHover(false)}
         />
       </div>
     </div>

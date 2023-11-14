@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../../../../../styles/TimerSetting.module.css";
-import timer from "../../../../../assets/images/timer.png";
+import timer from "../../../../../assets/base/timer.png";
 
 const TimerSetting = () =>{
   return (
