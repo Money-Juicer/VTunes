@@ -3,7 +3,7 @@ import ScrollList from "../../../common/ScrollList/ScrollList";
 import styles from "../../../../styles/SideContainerContents.module.css";
 import { useSelector } from "react-redux";
 
-const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic,isDeleteClick}) => {
+const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylist, onCurrentMusic, isDeleteClick, isSearch, searchResult}) => {
   const [deleteChosenMusic, setDeleteChosenMusic] = useState(-1);
 
   const handleDeleteChosenMusic = (musicId) =>{
@@ -24,7 +24,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 2,
-        musicName: "아뤼스트2",
+        musicName: "는인생이",
         lyrics: "는 인생이 예술이어야 한다2",
         artist: "김영현2",
         albumTitle: "음잘알 앨범2",
@@ -33,7 +33,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 3,
-        musicName: "아뤼스트",
+        musicName: "예술이어야",
         lyrics: "는 인생이 예술이어야 한다",
         artist: "김영현",
         albumTitle: "음잘알 앨범",
@@ -42,7 +42,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 4,
-        musicName: "아뤼스트2",
+        musicName: "한다",
         lyrics: "는 인생이 예술이어야 한다2",
         artist: "김영현2",
         albumTitle: "음잘알 앨범2",
@@ -51,7 +51,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 5,
-        musicName: "아뤼스트",
+        musicName: "짱영현",
         lyrics: "는 인생이 예술이어야 한다",
         artist: "김영현",
         albumTitle: "음잘알 앨범",
@@ -60,7 +60,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 6,
-        musicName: "아뤼스트2",
+        musicName: "신영현",
         lyrics: "는 인생이 예술이어야 한다2",
         artist: "김영현2",
         albumTitle: "음잘알 앨범2",
@@ -69,7 +69,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 7,
-        musicName: "아뤼스트",
+        musicName: "갓영현",
         lyrics: "는 인생이 예술이어야 한다",
         artist: "김영현",
         albumTitle: "음잘알 앨범",
@@ -78,7 +78,7 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
       },
       {
         musicId: 8,
-        musicName: "아뤼스트2",
+        musicName: "만세",
         lyrics: "는 인생이 예술이어야 한다2",
         artist: "김영현2",
         albumTitle: "음잘알 앨범2",
@@ -88,10 +88,22 @@ const SideContainerContents = ({ currentPlaylist, currentMusic, onCurrentPlaylis
     ],
   };
 
+  //리액트에서 state나 props가 변경되면 재렌더링 : 검색엔진에서 userInput이 존재할경우 searchResult아니면 currentPlaylist
+  const isNoSearchResult = isSearch && !searchResult.musics.length;
+  const isSearchResultExist = isSearch && searchResult.musics.length;
+  const playlistToRender = isSearchResultExist ? searchResult : curPlaylist;
+  
   return (
     <div className={styles["side-container-contents"]}>
       <ScrollList>
-        {curPlaylist.musics.map((musicData) => (
+        {
+          isNoSearchResult&&(
+            <div className={styles["music-wrapper"]}>
+             <span style={{width: '100%', height:'100%', fontSize:'20px'}}> No Results Found (｡•́︿•̀｡) </span>
+            </div>
+          )
+        }
+        {!isNoSearchResult && playlistToRender.musics.map((musicData) => (
           <div key={musicData.musicId} className={styles["music-wrapper"]}>
             <div className={styles["delete-button-area"]}>
               {isDeleteClick&&(
