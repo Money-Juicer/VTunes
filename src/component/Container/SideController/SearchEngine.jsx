@@ -7,7 +7,7 @@ import plMenuHover from '../../../assets/hover/playlist_menu.png';
 import searchClick from '../../../assets/onClick/search.png';
 import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
-const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, selectedPlaylist}) => {
+const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult, selectedPlaylist}) => {
   const [userInput, setUserInput] = useState("");
   const [imgSearchClick, setImgSearchClick] = useState(false);
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
@@ -47,6 +47,11 @@ const SearchEngine = ({ onPlMenuClick, onIsSearch, onSearchResult, selectedPlayl
     // userInput이 변경될 때마다 필터된 플레이리스트 업데이트
     filterPlaylist();
   }, [userInput]);
+  useEffect(() => {
+    if(isPlMenuClick){//isPlMenuClick하면 userInput을 reset시킴
+      setUserInput("");
+    }
+  }, [isPlMenuClick]);
 
 
   return (

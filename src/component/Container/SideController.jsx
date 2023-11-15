@@ -12,9 +12,19 @@ const SideController = () =>{
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState({musics:[]});//contents에 보여질 선택된 플레이리스트(현재 재생과 무관)
   
-  useEffect(()=>{
+  useEffect(()=>{//selectedPlaylist가 바뀌면 해당 플레이리스트의 음악 목록(SideContainerContents)을 보여줌
     setIsPlaylistMenuClick(false);
   },[selectedPlaylist])
+
+  useEffect(()=>{//playlist menu 클릭하면 검색결과와 isDeleteClick reset
+    if(isDeleteClick){
+      setIsDeleteClick(false);
+    }
+    if(isSearch){
+      setIsSearch(false);
+      setSearchResult({musics:[]});
+    }
+  },[isPlaylistMenuClick])
   
   const handleIsDeleteClick = () =>{
     setIsDeleteClick(prev=>!prev);
@@ -35,6 +45,7 @@ const SideController = () =>{
   return (
     <div className={styles["side-controller"]}>
       <SearchEngine
+        isPlMenuClick = {isPlaylistMenuClick}
         onPlMenuClick = {handleIsPlaylistMenuClick} 
         onIsSearch = {handleIsSearch}
         onSearchResult = {handleSearchResult} 
