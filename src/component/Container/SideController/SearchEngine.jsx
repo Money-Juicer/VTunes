@@ -32,13 +32,13 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult
   };
 
   const filterPlaylist = () => {
-    if(selectedPlaylist){
-      const filtered = selectedPlaylist.musics.filter((music) =>
+    if(selectedPlaylist&&selectedPlaylist.list){
+      const filtered = selectedPlaylist.list.filter((music) =>
         music.musicName.includes(userInput)
       );
-      onSearchResult({musics: filtered}); // 필터된 배열을 콜백으로 전달
+      onSearchResult({list: filtered}); // 필터된 배열을 콜백으로 전달
     }else{
-      onSearchResult({musics: []});
+      onSearchResult({list: []});
     }
 
   };
@@ -46,6 +46,7 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult
   useEffect(() => {
     // userInput이 변경될 때마다 필터된 플레이리스트 업데이트
     filterPlaylist();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInput]);
   useEffect(() => {
     if(isPlMenuClick){//isPlMenuClick하면 userInput을 reset시킴

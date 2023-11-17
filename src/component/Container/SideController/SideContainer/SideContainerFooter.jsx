@@ -3,10 +3,16 @@ import styles from "../../../../styles/SideContainerFooter.module.css";
 import TimerSetting from "./SideContainerFooter/TimerSetting";
 import Adder from "./SideContainerFooter/Adder";
 
-const SideContainerFooter = ({currentPlaylist, onCurrentPlaylist, onIsDeleteClick}) =>{
+const SideContainerFooter = ({ isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic, onDeleteMusic}) =>{
   return (
     <div className={styles["side-container-footer"]}>
-      <Adder onIsDeleteClick={onIsDeleteClick}/>
+      <Adder 
+      isDeleteClick={isDeleteClick} 
+      onIsDeleteClick={onIsDeleteClick} 
+      selectedPlaylist = {selectedPlaylist} 
+      onAddMusic={onAddMusic} 
+      onDeleteMusic={onDeleteMusic} 
+      />
       <TimerSetting />
     </div>
   );
