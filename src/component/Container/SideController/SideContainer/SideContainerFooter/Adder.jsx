@@ -42,7 +42,14 @@ const Adder = ({isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic }) 
         // 받아온 music을 onAddMusic을 통해서 selectedPlaylist에 추가함
         console.log(music);
         if (music) {
-          onAddMusic(selectedPlaylist, music);
+          // Check if the music already exists in the playlist
+          const isDuplicate = selectedPlaylist.list.some(existingMusic => existingMusic.path === music.path);
+
+          if (isDuplicate) {
+            alert("이미 추가된 음악입니다.");
+          } else {
+            onAddMusic(selectedPlaylist, music);
+          }
         } else {
           alert("음악 파일의 정보를 읽어오는데 실패했습니다.");
         }

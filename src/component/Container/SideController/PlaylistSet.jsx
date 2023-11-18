@@ -2,12 +2,12 @@ import React,{useEffect, useState} from "react";
 import styles from "../../../styles/PlaylistSet.module.css";
 import ScrollList from "../../common/ScrollList/ScrollList";
 import PlaylistItem from "./PlaylistItem";
-import Playlist from "../../../domain/Playlist";
 
 const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPlaylists, onSelectedPlaylist, onAddPlaylist, onDeletePlaylist}) => {
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   const [isAddClick, setIsAddClick] = useState(false);
   const [userInput, setUserInput] = useState("");
+  const [isAlert, setIsAlert] = useState(false);
   
   useEffect(()=>{
     onLoadAllPlaylists();
@@ -20,10 +20,20 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
   const handleAddClick = () =>{
     setIsAddClick(prev=>!prev);
   }
-  const handleAddPlaylist = ()=>{
+  const handleAddPlaylist = () => {
     setIsAddClick(false);
-    onAddPlaylist(new Playlist(userInput, []));//redux store에 추가
-  }
+  
+    const playlistExists = listOfPlaylist.some(playlist => playlist.name === userInput);
+  
+    if (playlistExists) {
+      setUserInput("");
+      setIsAlert(true);
+      setIsAddClick(true);
+    } else {
+      onAddPlaylist({ name: userInput, list: [] }); //redux store에 추가
+    }
+  };
+  
   const handleDeletePlaylist = ()=>{
     setIsDeleteClick(false);
   }
@@ -32,7 +42,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
   };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      // input에 enter쳐도 실행되게 할건데 아직 구현x
+      handleAddPlaylist();
     }
   };
 
@@ -47,7 +57,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
     <div className={styles["playlist-set-wrapper"]}>
       {isAddClick&&(//new playlist클릭시 뜨는 창 : adder-modal
         <div className={styles["adder-modal"]}>
-          <span>New Playlist</span>
+          <span>{isAlert ? "WARNING: Playlist already exists" : "New Playlist"}</span>
           <div className={styles["search-engine"]}>
             <input
               type="text"
@@ -59,7 +69,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
           </div>
           <div className={styles["adder-modal-button-area"]}>
             <button className={styles["confirm-button"]} onClick={handleAddPlaylist}>Confirm</button>
-            <button className={styles["cancel-button"]} onClick={()=>setIsAddClick(false)}>Cancel</button>
+            <button className={styles["cancel-button"]} onClick={() => { setIsAddClick(false); setIsAlert(false); }}>Cancel</button>
           </div>
         </div>
       )}

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/SideController.module.css";
 
-import SideContainerContainer from "../../containers/SideContainerContainer";
-import SearchEngineContainer from "../../containers/SearchEngineContainer";
+import SideContainer from "./SideController/SideContainer";
+import SearchEngine from "./SideController/SearchEngine";
 import PlaylistSetContainer from "../../containers/PlaylistSetContainer";
 
 const SideController = () =>{
-  const [searchResult, setSearchResult] = useState({musics:[]});
-  const [isSearch, setIsSearch] = useState(false);
+  const [userInput, setUserInput] = useState("");
   const [isPlaylistMenuClick, setIsPlaylistMenuClick] = useState(false);
   const [isDeleteClick, setIsDeleteClick] = useState(false);//음악 삭제 위한 버튼 플래그
   
@@ -18,29 +17,25 @@ const SideController = () =>{
     if(isPlaylistMenuClick&&isDeleteClick) setIsDeleteClick(false);
     setIsPlaylistMenuClick(prev=>!prev);
   }
-  const handleSearchResult = (result) => {
-    setSearchResult(result);
-  }
-  const handleIsSearch = (flag)=>{
-    setIsSearch(flag);
+  const handleUserInput = (input) =>{
+    setUserInput(input);
   }
   
   return (
     <div className={styles["side-controller"]}>
-      <SearchEngineContainer
+      <SearchEngine
         isPlMenuClick = {isPlaylistMenuClick}
-        onPlMenuClick = {handleIsPlaylistMenuClick} 
-        onIsSearch = {handleIsSearch}
-        onSearchResult = {handleSearchResult} 
+        onPlMenuClick = {handleIsPlaylistMenuClick}
+        userInput = {userInput}
+        onUserInput = {handleUserInput} 
       />
       {isPlaylistMenuClick && (
         <PlaylistSetContainer isPlMenuClick={isPlaylistMenuClick} onPlMenuClick={handleIsPlaylistMenuClick}/>
       )}
-      <SideContainerContainer 
+      <SideContainer
         isDeleteClick= {isDeleteClick} 
         onIsDeleteClick={handleIsDeleteClick} 
-        isSearch={isSearch}
-        searchResult={searchResult}
+        userInput={userInput}
       />
     </div>
   );

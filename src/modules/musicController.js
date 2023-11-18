@@ -1,4 +1,4 @@
-//action 설정
+//////////////////////////////////////액션 타입 상수////////////////////////////////////////////////
 const LOAD_ALL_SUCCESS = 'musicController/LOAD_ALL_SUCCESS';
 const LOAD_ALL_FAILURE = 'musicController/LOAD_ALL_FAILURE';
 
@@ -17,14 +17,14 @@ const ADD_MUSIC_FAILURE = 'musicController/ADD_MUSIC_FAILURE';
 const DELETE_MUSIC_SUCCESS = 'musicController/DELETE_MUSIC_SUCCESS';
 const DELETE_MUSIC_FAILURE = 'musicController/DELETE_MUSIC_FAILURE';
 
-const SET_MUSIC = 'musicController/SET_MUSIC';
+const SET_CURRENT_MUSIC = 'musicController/SET_CURRENT_MUSIC';
 const PREVIOUS_MUSIC = 'musicController/PREVIOUS_MUSIC';
 const NEXT_MUSIC = 'musicController/NEXT_MUSIC';
 
 const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
 
-
+////////////////////////////////////동기화 + 비동기화 액션/////////////////////////////////////////////////////////
 export const loadAll = () => async dispatch => {
   try {
     const result = await window.electronApi.loadAll();
@@ -72,6 +72,7 @@ export const deleteMusic = (playlist, music) => async dispatch=> {
     console.error('Error deleting playlist:', error);
   }
 }
+//////////////////////////////////////////비동기화 액션///////////////////////////////////////////////////
 export const loadAllSuccess = playlists => ({
   type: LOAD_ALL_SUCCESS,
   playlists
@@ -103,7 +104,10 @@ export const changeSelectedPlaylist = playlist => ({
   type : SET_SELECTED_PLAYLIST,
   playlist
 });
-
+export const changeCurrentMusic = music => ({
+  type : SET_CURRENT_MUSIC,
+  music
+});
 
 export const addMusicSuccess = (playlist, music) => ({
   type : ADD_MUSIC_SUCCESS,
@@ -122,10 +126,7 @@ export const deleteMusicFailure = () => ({
 });
 
 
-export const changeCurrentMusic = music => ({
-  type : SET_MUSIC,
-  music
-});
+
 export const previousMusic = () => ({
   type : PREVIOUS_MUSIC,
 });
@@ -140,6 +141,7 @@ export const modRepeatStatus = (input) => ({
   type : MOD_REPEAT_STATUS,
   input
 });
+///////////////////////////////////////////////초기 상태//////////////////////////////////////////////
 
 //repeatStatue와 shuffleStatus
 const repeatStatus = {
@@ -172,11 +174,13 @@ const initialState = {
   shuffleStatus : 1,
 }
 
+///////////////////////////////////////////리듀서//////////////////////////////////////////////////
+
+
 //reducer function
 function musicController(state = initialState, action){
   let currentPlaylist;
   let currentMusic;
-  let lop;
   let playlist;
   let music;
   switch(action.type){
@@ -203,7 +207,7 @@ function musicController(state = initialState, action){
 
     /*delete playlist*/
     case DELETE_PLAYLIST_SUCCESS:
-      lop = state.listOfPlaylist;
+      let lop = state.listOfPlaylist;
       lop = lop.filter(playlist => playlist.name !== action.name);
       return {
         ...state,
@@ -223,12 +227,17 @@ function musicController(state = initialState, action){
         ...state,
         selectedPlaylist : action.playlist
       };
-
-    /*add music to selected playlist*/
+    case SET_CURRENT_MUSIC:
+      return {
+        ...state,
+        currentMusic : action.music
+      };
+      
+    /*add music to selected playlist , currentPlaylist와는 무관하다*/
     case ADD_MUSIC_SUCCESS:
       playlist = action.payload.playlist;
       music = action.payload.music;
-      const updatedListOfPlaylist = state.listOfPlaylist.map(pl => {
+      const updatedListOfPlaylistAdd = state.listOfPlaylist.map(pl => {
         if (pl === playlist) {
           return {
             ...pl,
@@ -240,25 +249,25 @@ function musicController(state = initialState, action){
       });
       return {
         ...state,
-        listOfPlaylist: updatedListOfPlaylist,
+        listOfPlaylist: updatedListOfPlaylistAdd,
         selectedPlaylist: {
           ...state.selectedPlaylist,
-          list: [...state.selectedPlaylist.list, music]
-        }
+          list: [...state.selectedPlaylist.list, music],
+        },
       };
     case ADD_MUSIC_FAILURE:
       alert('Failed to add music.');
       return state;
 
-    /*delete music in selected playlist*/
+    /*delete music in selected playlist */
     case DELETE_MUSIC_SUCCESS:
-      playlist= action.payload.playlist;
+      playlist = action.payload.playlist;
       music = action.payload.music;
       const updatedListOfPlaylistDelete = state.listOfPlaylist.map(pl => {
         if (pl === playlist) {
           return {
             ...pl,
-            list: pl.list.filter(ms=> ms.name !== music.name)
+            list: pl.list.filter(ms => ms.name !== music.name),
           };
         } else {
           return pl;
@@ -269,29 +278,25 @@ function musicController(state = initialState, action){
         listOfPlaylist: updatedListOfPlaylistDelete,
         selectedPlaylist: {
           ...state.selectedPlaylist,
-          list: state.selectedPlaylist.list.filter(ms => ms.name !== music.name)
-        }
+          list: state.selectedPlaylist.list.filter(ms => ms.name !== music.name),
+        },
       };
     case DELETE_MUSIC_FAILURE:
       alert('Failed to delete music.');
       return state;
 
-    case SET_MUSIC:
-      return {
-        ...state,
-        currentMusic : action.music
-      };
+
 
     case PREVIOUS_MUSIC:
       currentPlaylist = state.currentPlaylist;
       currentMusic = state.currentMusic;
     
-      if (currentPlaylist && currentPlaylist.listOfMusic.length > 0) {
-        let currentIndex = currentPlaylist.listOfMusic.findIndex(music => music === currentMusic);
+      if (currentPlaylist && currentPlaylist.list.length > 0) {
+        let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
-          let newIndex = (currentIndex - 1 + currentPlaylist.listOfMusic.length) % currentPlaylist.listOfMusic.length;
-          const newMusic = currentPlaylist.listOfMusic[newIndex];//플레이리스트 내의 이전 음악(맨처음이면 맨끝으로)
+          let newIndex = (currentIndex - 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
+          const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 이전 음악(맨처음이면 맨끝으로) 이건 수정할수도
     
           return {
             ...state,
@@ -306,12 +311,12 @@ function musicController(state = initialState, action){
       currentPlaylist = state.currentPlaylist;
       currentMusic = state.currentMusic;
     
-      if (currentPlaylist && currentPlaylist.listOfMusic.length > 0) {
-        let currentIndex = currentPlaylist.listOfMusic.findIndex(music => music === currentMusic);
+      if (currentPlaylist && currentPlaylist.list.length > 0) {
+        let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
-          let newIndex = (currentIndex + 1) % currentPlaylist.listOfMusic.length;
-          const newMusic = currentPlaylist.listOfMusic[newIndex];//플레이리스트 내의 다음 음악(맨끝이면 맨처음으로)
+          let newIndex = (currentIndex + 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
+          const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 다음 음악(맨끝이면 맨처음으로)
     
           return {
             ...state,

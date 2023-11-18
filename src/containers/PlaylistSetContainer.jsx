@@ -13,8 +13,8 @@ const PlaylistSetContainer = ({isPlMenuClick, onPlMenuClick}) => {
             onLoadAllPlaylists={()=>dispatch(loadAll())}
 
             onSelectedPlaylist={(playlist)=>dispatch(changeSelectedPlaylist(playlist))}
-            onAddPlaylist={(playlist)=>dispatch(addPlaylist(playlist))}
-            onDeletePlaylist={(playlist)=>dispatch(deletePlaylist(playlist))}
+            onAddPlaylist={(playlist, listOfPlaylist)=>dispatch(addPlaylist(playlist, listOfPlaylist))}
+            onDeletePlaylist={(playlist, listOfPlaylist)=>dispatch(deletePlaylist(playlist, listOfPlaylist))}
           />;
 };
 

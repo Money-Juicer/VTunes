@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import SideContainerContents from '../component/Container/SideController/SideContainer/SideContainerContents';
 import { changeCurrentMusic, changeCurrentPlaylist, changeSelectedPlaylist, deleteMusic } from '../modules/musicController';
 
-const SideContainerContentsContainer = ({ isDeleteClick, isSearch, searchResult}) =>{
+const SideContainerContentsContainer = ({ isDeleteClick, userInput}) =>{
   const currentPlaylist = useSelector(state =>state.musicController.currentPlaylist);//useSelector로 상태조회
   const currentMusic = useSelector(state=> state.musicController.currentMusic);
   const selectedPlaylist = useSelector(state=> state.musicController.selectedPlaylist);
@@ -13,9 +13,8 @@ const SideContainerContentsContainer = ({ isDeleteClick, isSearch, searchResult}
   return (
     <SideContainerContents
     isDeleteClick={isDeleteClick}
-    isSearch={isSearch}
-    searchResult={searchResult}
-
+    userInput={userInput}
+    
       selectedPlaylist={selectedPlaylist}
       currentPlaylist={currentPlaylist}
       currentMusic={currentMusic}

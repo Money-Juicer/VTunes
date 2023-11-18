@@ -7,8 +7,7 @@ import plMenuHover from '../../../assets/hover/playlist_menu.png';
 import searchClick from '../../../assets/onClick/search.png';
 import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
-const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult, selectedPlaylist}) => {
-  const [userInput, setUserInput] = useState("");
+const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput}) => {
   const [imgSearchClick, setImgSearchClick] = useState(false);
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
   const [imgSearchHover, setImgSearchHover] = useState(false);
@@ -19,38 +18,12 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult
 
   const handleInputChange = (event) => {
     const inputText = event.target.value;
-    setUserInput(inputText);
-    
-    // 입력값이 존재하는지 여부에 따라 onIsSearch 호출
-    onIsSearch(!!inputText); // !!inputText를 사용하여 불리언 값으로 변환
+    onUserInput(inputText);
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      // input에 enter쳐도 실행되게 할건데 아직 구현x
-    }
-  };
-
-  const filterPlaylist = () => {
-    if(selectedPlaylist&&selectedPlaylist.list){
-      const filtered = selectedPlaylist.list.filter((music) =>
-        music.musicName.includes(userInput)
-      );
-      onSearchResult({list: filtered}); // 필터된 배열을 콜백으로 전달
-    }else{
-      onSearchResult({list: []});
-    }
-
-  };
-
-  useEffect(() => {
-    // userInput이 변경될 때마다 필터된 플레이리스트 업데이트
-    filterPlaylist();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInput]);
   useEffect(() => {
     if(isPlMenuClick){//isPlMenuClick하면 userInput을 reset시킴
-      setUserInput("");
+      onUserInput("");
     }
   }, [isPlMenuClick]);
 
@@ -64,7 +37,6 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, onIsSearch, onSearchResult
             placeholder="            Search Music in Playlist"
             value={userInput}
             onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
           />
           {!userInput && (
             <div className={styles["search-icon"]}>

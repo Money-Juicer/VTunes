@@ -1,0 +1,20 @@
+//react-redux store에서 ControlBar 으로 정보 받아오기
+import {useSelector, useDispatch} from 'react-redux';
+import { previousMusic, nextMusic } from '../modules/musicController';
+import ControlBar from '../component/ControlBar';
+
+const ControlBarContainer = () => {
+  const currentPlaylist = useSelector(state=> state.musicController.currentPlaylist);
+  const currentMusic = useSelector(state=> state.musicController.currentMusic);
+  const dispatch = useDispatch();//useDispatch로 액션 디스패치
+  return (
+    <ControlBar 
+    currentPlaylist = {currentPlaylist} 
+    currentMusic = {currentMusic}  
+    onPrevMusic = {()=>dispatch(previousMusic())}
+    onNextMusic = {()=>dispatch(nextMusic())}
+    />
+  );
+};
+
+export default ControlBarContainer;

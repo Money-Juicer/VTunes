@@ -5,14 +5,13 @@ import SideContainerHeaderContainer from "../../../containers/SideContainerHeade
 import SideContainerContentsContainer from "../../../containers/SideContainerContentsContainer";
 import SideContainerFooterContainer from "../../../containers/SideContainerFooterContainer";
 
-const SideContainer = ({isDeleteClick, onIsDeleteClick, isSearch, searchResult, }) =>{
+const SideContainer = ({isDeleteClick, onIsDeleteClick, userInput }) =>{
   return (
     <div className={styles["side-container"]}>
       <SideContainerHeaderContainer/>
       <SideContainerContentsContainer
         isDeleteClick={isDeleteClick}
-        isSearch = {isSearch}
-        searchResult={searchResult}
+        userInput={userInput}
       />
       <SideContainerFooterContainer
         isDeleteClick={isDeleteClick}

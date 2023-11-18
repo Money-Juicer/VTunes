@@ -30,7 +30,7 @@ app.whenReady().then(() => {
   createWindow();
 });
 
-/*로컬 음악 파일 선택*/
+/*렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain*/
 ipcMain.handle('select-music-file', async (event) => {
   try {
     const result = await dialog.showOpenDialog({
