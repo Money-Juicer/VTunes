@@ -31,6 +31,7 @@ app.whenReady().then(() => {
 });
 
 /*렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain*/
+//dialog를 통해서 로컬 파일 경로 얻기
 ipcMain.handle('select-music-file', async (event) => {
   try {
     const result = await dialog.showOpenDialog({

@@ -1,7 +1,7 @@
 //react-redux store에서 SideContainerContents 으로 정보 받아오기
 import {useSelector, useDispatch} from 'react-redux';
 import SideContainerContents from '../component/Container/SideController/SideContainer/SideContainerContents';
-import { changeCurrentMusic, changeCurrentPlaylist, changeSelectedPlaylist, deleteMusic, setIsCurrentPlaylistViewed, addPlaylist } from '../modules/musicController';
+import { changeCurrentMusic, changeCurrentPlaylist, changeSelectedPlaylist, deleteMusic, setIsCurrentPlaylistViewed, addPlaylist, addMusic } from '../modules/musicController';
 
 const SideContainerContentsContainer = ({ isDeleteClick, userInput}) =>{
   const listOfPlaylist = useSelector(state => state.musicController.listOfPlaylist);
@@ -29,6 +29,7 @@ const SideContainerContentsContainer = ({ isDeleteClick, userInput}) =>{
       onDeleteMusic={(playlist, music)=>dispatch(deleteMusic(playlist, music))}
       onIsCurrentPlaylistViewed={(input)=>dispatch(setIsCurrentPlaylistViewed(input))}
       onAddPlaylist={(playlist)=>dispatch(addPlaylist(playlist))}
+      onAddMusic={(playlist, music)=>dispatch(addMusic(playlist, music))}
      />
   );
 };
