@@ -9,7 +9,8 @@ const DELETE_PLAYLIST_SUCCESS = 'musicController/DELETE_PLAYLIST_SUCCESS';
 const DELETE_PLAYLIST_FAILURE = 'musicController/DELETE_PLAYLIST_FAILURE';
 
 const SET_CURRENT_PLAYLIST = 'musicController/SET_CURRENT_PLAYLIST';
-const SET_SELECTED_PLAYLIST = 'musicController/SET_SELECTED_PLAYLIST';
+const SET_SELECTED_PLAYLIST_SUCCESS = 'musicController/SET_SELECTED_PLAYLIST_SUCCESS';
+const SET_SELECTED_PLAYLIST_FAILURE = 'musicController/SET_SELECTED_PLAYLIST_FAILURE';
 
 const ADD_MUSIC_SUCCESS = 'musicController/ADD_MUSIC_SUCCESS';
 const ADD_MUSIC_FAILURE = 'musicController/ADD_MUSIC_FAILURE';
@@ -61,7 +62,7 @@ export const addMusic = (playlist, music) => async dispatch=> {
     dispatch(addMusicSuccess(playlist, music));
   }catch(error){
     dispatch(addMusicFailure());
-    console.error('Error deleting playlist:', error);
+    console.error('Error adding playlist:', error);
   }
 }
 export const deleteMusic = (playlist, music) => async dispatch=> {
@@ -71,6 +72,15 @@ export const deleteMusic = (playlist, music) => async dispatch=> {
   }catch(error){
     dispatch(deleteMusicFailure());
     console.error('Error deleting playlist:', error);
+  }
+}
+export const changeSelectedPlaylist = (playlist) => async dispatch=>{
+  try{
+    await window.electronApi.changePlaylist(playlist);
+    dispatch(changeSelectedPlaylistSuccess(playlist));
+  }catch(error){
+    dispatch(changeSelectedPlaylistFailure(playlist));
+    console.error('Error changing selected playlist:', error);
   }
 }
 //////////////////////////////////////////비동기화 액션///////////////////////////////////////////////////
@@ -101,9 +111,12 @@ export const changeCurrentPlaylist = playlist => ({
   type : SET_CURRENT_PLAYLIST,
   playlist
 });
-export const changeSelectedPlaylist = playlist => ({
-  type : SET_SELECTED_PLAYLIST,
+export const changeSelectedPlaylistSuccess = playlist => ({
+  type : SET_SELECTED_PLAYLIST_SUCCESS,
   playlist
+});
+export const changeSelectedPlaylistFailure = () => ({
+  type : SET_SELECTED_PLAYLIST_FAILURE,
 });
 export const changeCurrentMusic = music => ({
   type : SET_CURRENT_MUSIC,
@@ -229,11 +242,15 @@ function musicController(state = initialState, action){
         ...state,
         currentPlaylist : {...state.currentPlaylist, list: action.playlist.list}
       };
-    case SET_SELECTED_PLAYLIST:
+    case SET_SELECTED_PLAYLIST_SUCCESS:
       return {
         ...state,
         selectedPlaylist : action.playlist
       };
+    case SET_SELECTED_PLAYLIST_FAILURE:
+      alert('Failed to change playlist.');
+      return state;
+
     case SET_CURRENT_MUSIC:
       return {
         ...state,

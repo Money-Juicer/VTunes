@@ -150,7 +150,7 @@ async function loadMusicFile(path, thumbnailPath) {
 };
 ipcMain.handle('delete-music', async (event, playlist, music) => {
   try {
-    if(playlist.name !== "현재재생목록"){//현재재생목록 이면 json파일에 접근하지 않아도 된다
+    if(playlist&&playlist.name !== "현재재생목록"){//현재재생목록 이면 json파일에 접근하지 않아도 된다
       // 파일 읽기
       const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
       const fileData = await fs.promises.readFile(filePath, 'utf-8');
@@ -168,6 +168,24 @@ ipcMain.handle('delete-music', async (event, playlist, music) => {
     event.sender.send('deleteMusicResponse', false);
   }
 });
+ipcMain.handle('change-playlist', async (event, playlist) => {
+  try {
+    if(playlist&& playlist.name !=="현재재생목록"){
+      const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
+      const fileData = await fs.promises.readFile(filePath, 'utf-8');
+      const playlistData = JSON.parse(fileData);
+
+      playlistData.list = playlist.list;
+
+      await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
+    }
+    event.sender.send('changePlaylistResponse', true);
+  } catch (error) {
+    console.error('Error changing playlist:', error);
+    event.sender.send('changePlaylistResponse', false);
+  }
+});
+
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
