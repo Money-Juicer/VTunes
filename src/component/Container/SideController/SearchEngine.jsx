@@ -7,7 +7,7 @@ import plMenuHover from '../../../assets/hover/playlist_menu.png';
 import searchClick from '../../../assets/onClick/search.png';
 import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
-const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput, isCurrentPlaylistViewed, onIsCurrentPlaylistViewed}) => {
+const SearchEngine = ({ selectedPlaylist, isPlMenuClick, onPlMenuClick, userInput, onUserInput, isCurrentPlaylistViewed, onIsCurrentPlaylistViewed}) => {
   const [imgSearchClick, setImgSearchClick] = useState(false);
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
   const [imgSearchHover, setImgSearchHover] = useState(false);
@@ -63,9 +63,13 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput, is
           src={plMenuImage}
           alt="playlistMenu"
           onClick={() => {
-            setImgPlMenuClick(true);
-            setTimeout(() => setImgPlMenuClick(false), 100);
-            onIsCurrentPlaylistViewed(false);//플레이리스트 목록을 보려고 하면 현재재생목록이 안보이게함
+            if (selectedPlaylist&&selectedPlaylist.list&&selectedPlaylist.list.length > 0) {
+              setImgPlMenuClick(true);
+              setTimeout(() => setImgPlMenuClick(false), 100);
+              onIsCurrentPlaylistViewed(false);
+            } else {
+              onIsCurrentPlaylistViewed(true);
+            }
           }}
           onMouseEnter={() => setImgPlMenuHover(true)}
           onMouseLeave={() => setImgPlMenuHover(false)}

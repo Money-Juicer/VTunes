@@ -65,7 +65,9 @@ ipcMain.handle('load-all', async (event) => {
 ipcMain.handle('add-playlist', async (event, playlist) => {
   try {
     console.log('Received addPlaylist event:', playlist);
-    await fs.promises.writeFile(`./resource/${playlist.name}.json`, JSON.stringify(playlist));
+    if(playlist.name !== "현재재생목록"){//현재재생목록 플레이리스트면 굳이 json파일을 만들지 않아도 된다
+      await fs.promises.writeFile(`./resource/${playlist.name}.json`, JSON.stringify(playlist));
+    }
     event.sender.send('savePlaylistResponse', true);
   } catch (error) {
     console.error('Error saving playlist:', error);
@@ -83,17 +85,18 @@ ipcMain.handle('delete-playlist', async (event, name) => {
 });
 ipcMain.handle('add-music', async (event, playlist, music) => {
   try {
-    // 파일 읽기
-    const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
-    const fileData = await fs.promises.readFile(filePath, 'utf-8');
-    const playlistData = JSON.parse(fileData);
+    if(playlist.name !== "현재재생목록"){//현재 재생목록이면 json파일에 접근할 필요가 없다
+      // 파일 읽기
+      const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
+      const fileData = await fs.promises.readFile(filePath, 'utf-8');
+      const playlistData = JSON.parse(fileData);
 
-    // 음악 추가
-    playlistData.list.push(music);
+      // 음악 추가
+      playlistData.list.push(music);
 
-    // 파일 쓰기
-    await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
-
+      // 파일 쓰기
+      await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
+    }
     event.sender.send('addMusicResponse', true);
   } catch (error) {
     console.error('Error adding music:', error);
@@ -146,17 +149,18 @@ async function loadMusicFile(path, thumbnailPath) {
 };
 ipcMain.handle('delete-music', async (event, playlist, music) => {
   try {
-    // 파일 읽기
-    const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
-    const fileData = await fs.promises.readFile(filePath, 'utf-8');
-    const playlistData = JSON.parse(fileData);
+    if(playlist.name !== "현재재생목록"){//현재재생목록 이면 json파일에 접근하지 않아도 된다
+      // 파일 읽기
+      const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
+      const fileData = await fs.promises.readFile(filePath, 'utf-8');
+      const playlistData = JSON.parse(fileData);
 
-    // 음악 찾기 및 삭제
-    playlistData.list = playlistData.list.filter(item => item.name !== music.name);
+      // 음악 찾기 및 삭제
+      playlistData.list = playlistData.list.filter(item => item.name !== music.name);
 
-    // 파일 쓰기
-    await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
-
+      // 파일 쓰기
+      await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
+    }
     event.sender.send('deleteMusicResponse', true);
   } catch (error) {
     console.error('Error deleting music:', error);

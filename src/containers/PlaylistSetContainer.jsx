@@ -1,6 +1,6 @@
 //react-redux store에서 SearchEngine 으로 정보 받아오기
 import {useSelector, useDispatch} from 'react-redux';
-import { changeSelectedPlaylist, addPlaylist, deletePlaylist, loadAll } from '../modules/musicController';
+import { changeSelectedPlaylist, addPlaylist, deletePlaylist, loadAll, setIsCurrentPlaylistViewed } from '../modules/musicController';
 import PlaylistSet from '../component/Container/SideController/PlaylistSet';
 
 const PlaylistSetContainer = ({isPlMenuClick, onPlMenuClick}) => {
@@ -15,6 +15,7 @@ const PlaylistSetContainer = ({isPlMenuClick, onPlMenuClick}) => {
             onSelectedPlaylist={(playlist)=>dispatch(changeSelectedPlaylist(playlist))}
             onAddPlaylist={(playlist, listOfPlaylist)=>dispatch(addPlaylist(playlist, listOfPlaylist))}
             onDeletePlaylist={(playlist, listOfPlaylist)=>dispatch(deletePlaylist(playlist, listOfPlaylist))}
+            onIsCurrentPlaylistViewed = {(input)=>dispatch(setIsCurrentPlaylistViewed(input))}
           />;
 };
 

@@ -8,7 +8,15 @@ import currentPl from '../assets/base/currentPl.png';
 import currentPlHover from '../assets/hover/currentPl.png';
 import currentPlClick from '../assets/onClick/currentPl.png';
 
-const ControlBar = ({currentPlaylist, currentMusic, onPrevMusic, onNextMusic, isCurrentPlaylistViewed, onIsCurrentPlaylistViewed}) => {
+const ControlBar = ({
+  selectedPlaylist, 
+  currentPlaylist, 
+  currentMusic, 
+  onPrevMusic, 
+  onNextMusic, 
+  isCurrentPlaylistViewed, 
+  onIsCurrentPlaylistViewed
+}) => {
   // const [controller, setController] = useState(new Controller(new Playlist()));
   // const [curr, setCurr] = useState("local://C:\\Users\\LEE\\Downloads\\Quick Share\\1.mp3");
   // const next = () => setCurr(controller.next());
@@ -17,6 +25,7 @@ const ControlBar = ({currentPlaylist, currentMusic, onPrevMusic, onNextMusic, is
   const [imgCurrentPlHover, setImgCurrentPlHover] = useState(false);
 
   const currentPlImage = imgCurrentPlClick ? currentPlClick : imgCurrentPlHover ? currentPlHover : currentPl;
+  const shouldDisableClick = !selectedPlaylist.list || selectedPlaylist.list.length === 0;
 
   const handleClickControlBar = () =>{
     if(isCurrentPlaylistViewed) onIsCurrentPlaylistViewed(false);
@@ -25,17 +34,24 @@ const ControlBar = ({currentPlaylist, currentMusic, onPrevMusic, onNextMusic, is
   return (
     <div className={styles["footer"]} >
       <div className={styles["button-area"]}>
-        <img 
-        src={currentPlImage}
-        alt={"현재재생목록 보기"}
-        onClick={() => {
-          setImgCurrentPlClick(prev=>!prev);
-          setTimeout(() => setImgCurrentPlClick(false), 200);
-          handleClickControlBar();
-        }}
-        onMouseEnter={() => setImgCurrentPlHover(true)}
-        onMouseLeave={() => setImgCurrentPlHover(false)}
-        />
+      {shouldDisableClick ? (
+          <img
+            src={currentPl}
+            alt={"현재재생목록 보기"}
+          />
+        ) : (
+          <img 
+            src={currentPlImage}
+            alt={"현재재생목록 보기"}
+            onClick={() => {
+              setImgCurrentPlClick(prev => !prev);
+              setTimeout(() => setImgCurrentPlClick(false), 200);
+              handleClickControlBar();
+            }}
+            onMouseEnter={() => setImgCurrentPlHover(true)}
+            onMouseLeave={() => setImgCurrentPlHover(false)}
+          />
+        )}
         <button>dd</button>
       </div>
       <MusicPlayer autoPlay src={currentMusic? "local://".concat(currentMusic.path) : ""}

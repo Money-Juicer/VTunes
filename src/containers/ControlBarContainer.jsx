@@ -4,12 +4,14 @@ import { previousMusic, nextMusic, setIsCurrentPlaylistViewed } from '../modules
 import ControlBar from '../component/ControlBar';
 
 const ControlBarContainer = () => {
+  const selectedPlaylist = useSelector(state=> state.musicController.selectedPlaylist);
   const currentPlaylist = useSelector(state=> state.musicController.currentPlaylist);
   const currentMusic = useSelector(state=> state.musicController.currentMusic);
   const isCurrentPlaylistViewed = useSelector(state=>state.musicController.isCurrentPlaylistViewed);
   const dispatch = useDispatch();//useDispatch로 액션 디스패치
   return (
     <ControlBar 
+    selectedPlaylist = {selectedPlaylist}
     currentPlaylist = {currentPlaylist} 
     currentMusic = {currentMusic}  
     onPrevMusic = {()=>dispatch(previousMusic())}

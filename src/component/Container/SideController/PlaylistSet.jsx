@@ -3,7 +3,16 @@ import styles from "../../../styles/PlaylistSet.module.css";
 import ScrollList from "../../common/ScrollList/ScrollList";
 import PlaylistItem from "./PlaylistItem";
 
-const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPlaylists, onSelectedPlaylist, onAddPlaylist, onDeletePlaylist}) => {
+const PlaylistSet = ({
+  isPlMenuClick, 
+  onPlMenuClick, 
+  listOfPlaylist, 
+  onLoadAllPlaylists, 
+  onSelectedPlaylist, 
+  onAddPlaylist, 
+  onDeletePlaylist,
+  onIsCurrentPlaylistViewed,
+}) => {
   const [isDeleteClick, setIsDeleteClick] = useState(false);
   const [isAddClick, setIsAddClick] = useState(false);
   const [userInput, setUserInput] = useState("");
@@ -25,7 +34,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
   
     const playlistExists = listOfPlaylist.some(playlist => playlist.name === userInput);
   
-    if (playlistExists) {
+    if (playlistExists || userInput === "") {
       setUserInput("");
       setIsAlert(true);
       setIsAddClick(true);
@@ -57,7 +66,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
     <div className={styles["playlist-set-wrapper"]}>
       {isAddClick&&(//new playlist클릭시 뜨는 창 : adder-modal
         <div className={styles["adder-modal"]}>
-          <span>{isAlert ? "WARNING: Playlist already exists" : "New Playlist"}</span>
+          <span>{isAlert ? "Unvalid Playlist Name" : "New Playlist"}</span>
           <div className={styles["search-engine"]}>
             <input
               type="text"
@@ -92,6 +101,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
                   onPlMenuClick={onPlMenuClick}//플레이리스트 선택하면 sideContainerContents보여주는 용도
                   onSelectedPlaylist={onSelectedPlaylist}
                   onDeletePlaylist={onDeletePlaylist}
+                  onIsCurrentPlaylistViewed={onIsCurrentPlaylistViewed}
                 />
               </div>
             ))

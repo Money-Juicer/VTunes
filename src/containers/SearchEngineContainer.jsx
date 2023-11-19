@@ -4,11 +4,13 @@ import SearchEngine from '../component/Container/SideController/SearchEngine';
 import { setIsCurrentPlaylistViewed } from '../modules/musicController';
 
 const SearchEngineContainer = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput}) => {
+  const selectedPlaylist = useSelector(state=> state.musicController.selectedPlaylist);
   const isCurrentPlaylistViewed = useSelector(state=> state.musicController.isCurrentPlaylistViewed);
   const dispatch = useDispatch();
 
   return(
     <SearchEngine 
+    selectedPlaylist={selectedPlaylist}
     isPlMenuClick={isPlMenuClick}
     onPlMenuClick={onPlMenuClick}
     userInput={userInput}
