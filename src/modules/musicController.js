@@ -24,6 +24,7 @@ const NEXT_MUSIC = 'musicController/NEXT_MUSIC';
 const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
 
+const SET_IS_CURRENT_PLAYLIST_VIEWED = 'musicController/SET_IS_CURRENT_PLAYLIST_VIEWED';
 ////////////////////////////////////동기화 + 비동기화 액션/////////////////////////////////////////////////////////
 export const loadAll = () => async dispatch => {
   try {
@@ -141,6 +142,11 @@ export const modRepeatStatus = (input) => ({
   type : MOD_REPEAT_STATUS,
   input
 });
+
+export const setIsCurrentPlaylistViewed = (input) => ({
+  type : SET_IS_CURRENT_PLAYLIST_VIEWED,
+  input
+})
 ///////////////////////////////////////////////초기 상태//////////////////////////////////////////////
 
 //repeatStatue와 shuffleStatus
@@ -161,7 +167,7 @@ Object.freeze(shuffleStatus);
 const initialState = {
   listOfPlaylist : [],
   selectedPlaylist : { name: "", list: [],},
-  currentPlaylist : { name: "", list: [],},
+  currentPlaylist : { name: "현재재생목록", list: [],},
   currentMusic : {
     name : "",
     lyrics : "",
@@ -172,6 +178,7 @@ const initialState = {
   },
   repeatStatus : 0,
   shuffleStatus : 1,
+  isCurrentPlaylistViewed : true,
 }
 
 ///////////////////////////////////////////리듀서//////////////////////////////////////////////////
@@ -220,7 +227,7 @@ function musicController(state = initialState, action){
     case SET_CURRENT_PLAYLIST:
       return {
         ...state,
-        currentPlaylist : action.playlist
+        currentPlaylist : {...state.currentPlaylist, list: action.playlist.list}
       };
     case SET_SELECTED_PLAYLIST:
       return {
@@ -233,7 +240,7 @@ function musicController(state = initialState, action){
         currentMusic : action.music
       };
       
-    /*add music to selected playlist , currentPlaylist와는 무관하다*/
+    /*add music to playlist*/
     case ADD_MUSIC_SUCCESS:
       playlist = action.payload.playlist;
       music = action.payload.music;
@@ -247,15 +254,26 @@ function musicController(state = initialState, action){
           return pl;
         }
       });
-      return {
-        ...state,
-        listOfPlaylist: updatedListOfPlaylistAdd,
-        selectedPlaylist: {
-          ...state.selectedPlaylist,
-          list: [...state.selectedPlaylist.list, music],
-        },
+      if (playlist.name === '현재재생목록') {
+        return {
+          ...state,
+          listOfPlaylist: updatedListOfPlaylistAdd,
+          currentPlaylist: {
+            ...state.currentPlaylist,
+            list: [...state.currentPlaylist.list, music],
+          },
+        };
+      } else {
+        return {
+          ...state,
+          listOfPlaylist: updatedListOfPlaylistAdd,
+          selectedPlaylist: {
+            ...state.selectedPlaylist,
+            list: [...state.selectedPlaylist.list, music],
+          },
+        };
       };
-    case ADD_MUSIC_FAILURE:
+      case ADD_MUSIC_FAILURE:
       alert('Failed to add music.');
       return state;
 
@@ -273,13 +291,24 @@ function musicController(state = initialState, action){
           return pl;
         }
       });
+      if (playlist.name === '현재재생목록') {
+        return {
+          ...state,
+          listOfPlaylist: updatedListOfPlaylistDelete,
+          currentPlaylist: {
+            ...state.currentPlaylist,
+            list: state.currentPlaylist.list.filter(ms => ms.name !== music.name),
+          },
+        };
+      } else {
       return {
-        ...state,
-        listOfPlaylist: updatedListOfPlaylistDelete,
-        selectedPlaylist: {
-          ...state.selectedPlaylist,
-          list: state.selectedPlaylist.list.filter(ms => ms.name !== music.name),
-        },
+          ...state,
+          listOfPlaylist: updatedListOfPlaylistDelete,
+          selectedPlaylist: {
+            ...state.selectedPlaylist,
+            list: state.selectedPlaylist.list.filter(ms => ms.name !== music.name),
+          },
+        };
       };
     case DELETE_MUSIC_FAILURE:
       alert('Failed to delete music.');
@@ -336,6 +365,12 @@ function musicController(state = initialState, action){
       return {
         ...state,
         repeatStatus : action.input
+      };
+    
+    case SET_IS_CURRENT_PLAYLIST_VIEWED:
+      return {
+        ...state,
+        isCurrentPlaylistViewed : action.input
       };
 
     default :

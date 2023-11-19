@@ -7,7 +7,7 @@ import plMenuHover from '../../../assets/hover/playlist_menu.png';
 import searchClick from '../../../assets/onClick/search.png';
 import plMenuClick from '../../../assets/onClick/playlist_menu.png';
 
-const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput}) => {
+const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput, isCurrentPlaylistViewed, onIsCurrentPlaylistViewed}) => {
   const [imgSearchClick, setImgSearchClick] = useState(false);
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
   const [imgSearchHover, setImgSearchHover] = useState(false);
@@ -25,8 +25,12 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput}) =
     if(isPlMenuClick){//isPlMenuClick하면 userInput을 reset시킴
       onUserInput("");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlMenuClick]);
-
+  useEffect(()=>{
+    onUserInput("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[isCurrentPlaylistViewed]);
 
   return (
     <div className={styles["search-engine-wrapper"]}>
@@ -61,6 +65,7 @@ const SearchEngine = ({ isPlMenuClick, onPlMenuClick, userInput, onUserInput}) =
           onClick={() => {
             setImgPlMenuClick(true);
             setTimeout(() => setImgPlMenuClick(false), 100);
+            onIsCurrentPlaylistViewed(false);//플레이리스트 목록을 보려고 하면 현재재생목록이 안보이게함
           }}
           onMouseEnter={() => setImgPlMenuHover(true)}
           onMouseLeave={() => setImgPlMenuHover(false)}

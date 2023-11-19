@@ -4,7 +4,13 @@ import SideContainerHeader from "../component/Container/SideController/SideConta
 
 const SideContainerHeaderContainer = () => {
   const selectedPlaylist = useSelector(state=> state.musicController.selectedPlaylist);
-  return <SideContainerHeader selectedPlaylist = {selectedPlaylist} />;
+  const currentPlaylist = useSelector(state =>state.musicController.currentPlaylist);//useSelector로 상태조회
+  const isCurrentPlaylistViewed  = useSelector(state=>state.musicController.isCurrentPlaylistViewed);
+  return <SideContainerHeader 
+  selectedPlaylist = {selectedPlaylist} 
+  currentPlaylist={currentPlaylist} 
+  isCurrentPlaylistViewed={isCurrentPlaylistViewed}
+  />;
 };
 
 export default SideContainerHeaderContainer;

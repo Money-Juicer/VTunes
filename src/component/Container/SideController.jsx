@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/SideController.module.css";
 
 import SideContainer from "./SideController/SideContainer";
-import SearchEngine from "./SideController/SearchEngine";
 import PlaylistSetContainer from "../../containers/PlaylistSetContainer";
+import SearchEngineContainer from "../../containers/SearchEngineContainer";
 
 const SideController = () =>{
   const [userInput, setUserInput] = useState("");
@@ -23,7 +23,7 @@ const SideController = () =>{
   
   return (
     <div className={styles["side-controller"]}>
-      <SearchEngine
+      <SearchEngineContainer
         isPlMenuClick = {isPlaylistMenuClick}
         onPlMenuClick = {handleIsPlaylistMenuClick}
         userInput = {userInput}

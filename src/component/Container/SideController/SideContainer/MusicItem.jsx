@@ -6,19 +6,25 @@ import deleterHover from "../../../../assets/hover/deleter.png";
 import deleterClick from "../../../../assets/onClick/deleter.png";
 import playing from "../../../../assets/base/playing.png";
 
-const MusicItem = ({buttonFlag, musicData, isPlaying, selectedPlaylist, onDeleteMusic, onCurrent }) => {
+const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDeleteMusic, onCurrent, onCurrentMusic, onIsCurrentPlaylistViewed }) => {
   const [imgDeleterClick, setImgDeleterClick] = useState(false);
   const [imgDeleterHover, setImgDeleterHover] = useState(false);
-  const [isMusicItemClick, setIsMusicItemClick] = useState(false);
 
   const deleterImage = imgDeleterClick ? deleterClick : imgDeleterHover ? deleterHover : deleter;
 
   const handleMusicItemClick = ()=>{
-    setIsMusicItemClick(true);
-    onCurrent(musicData);
+    if(!buttonFlag){//deleter(-)가 보이지 않았을 때만 클릭해서 음악 재생이 가능하다
+      if(playlistToRender&&playlistToRender.name === "현재재생목록"){
+        onCurrentMusic(musicData);
+      }else{
+        onCurrent(musicData);
+      }
+      onIsCurrentPlaylistViewed(true);
+    }
   }
+
   return (
-    <div className={styles["music-wrapper"]} onClick={()=>onCurrent(musicData)}>
+    <div className={styles["music-wrapper"]} onClick={handleMusicItemClick}>
       <div className={styles["delete-button-area"]}>
         {buttonFlag&&(
           <img
@@ -27,7 +33,7 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, selectedPlaylist, onDelete
             onClick={() => {
               setImgDeleterClick(true);
               setTimeout(() => setImgDeleterClick(false), 100);
-              onDeleteMusic(selectedPlaylist, musicData);//redux store에서 삭제
+              onDeleteMusic(playlistToRender, musicData);//redux store에서 삭제
             }}
             onMouseEnter={() => setImgDeleterHover(true)}
             onMouseLeave={() => setImgDeleterHover(false)}

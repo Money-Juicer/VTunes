@@ -20,7 +20,7 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
   const handleAddClick = () =>{
     setIsAddClick(prev=>!prev);
   }
-  const handleAddPlaylist = () => {
+  const handleAddPlaylist = () => {//playlist json 파일 추가
     setIsAddClick(false);
   
     const playlistExists = listOfPlaylist.some(playlist => playlist.name === userInput);
@@ -80,17 +80,22 @@ const PlaylistSet = ({isPlMenuClick, onPlMenuClick, listOfPlaylist, onLoadAllPla
       </div>
       <div className={styles["playlist-set"]}>
         <ScrollList>
-        {listOfPlaylist&&Array.isArray(listOfPlaylist)&&listOfPlaylist.map((playlist, index) => (
-          <div className={styles["playlist-wrapper"]} key={index}>
-            <PlaylistItem 
-            buttonFlag = {isDeleteClick} 
-            playlistData={playlist} 
-            onPlMenuClick={onPlMenuClick}//플레이리스트 선택하면 sideContainerContents보여주는 용도
-            onSelectedPlaylist={onSelectedPlaylist}
-            onDeletePlaylist={onDeletePlaylist}
-            />
-          </div>
-        ))}
+        {listOfPlaylist &&
+          Array.isArray(listOfPlaylist) &&
+          listOfPlaylist
+            .filter(playlist => playlist.name !== "현재재생목록")
+            .map((playlist, index) => (
+              <div className={styles["playlist-wrapper"]} key={index}>
+                <PlaylistItem
+                  buttonFlag={isDeleteClick}
+                  playlistData={playlist}
+                  onPlMenuClick={onPlMenuClick}//플레이리스트 선택하면 sideContainerContents보여주는 용도
+                  onSelectedPlaylist={onSelectedPlaylist}
+                  onDeletePlaylist={onDeletePlaylist}
+                />
+              </div>
+            ))
+        }
         </ScrollList>
       </div>
     </div>

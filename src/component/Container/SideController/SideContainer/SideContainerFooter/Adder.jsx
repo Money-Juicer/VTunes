@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useEffect, useState} from "react";
 import styles from "../../../../../styles/Adder.module.css";
 import adder from "../../../../../assets/base/adder.png";
 import remover from "../../../../../assets/base/remover.png";
@@ -7,7 +7,15 @@ import removerHover from "../../../../../assets/hover/remover.png";
 import adderClick from "../../../../../assets/onClick/adder.png";
 import removerClick from "../../../../../assets/onClick/remover.png";
 
-const Adder = ({isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic }) => {
+const Adder = ({
+  isDeleteClick, 
+  onIsDeleteClick, 
+  currentPlaylist,
+  currentMusic,
+  selectedPlaylist, 
+  isCurrentPlaylistViewed,
+  onAddMusic 
+}) => {
   const [imgAdderClick, setImgAdderClick] = useState(false);
   const [imgRemoverClick, setImgRemoverClick] = useState(false);
   const [imgAdderHover, setImgAdderHover] = useState(false);
@@ -42,13 +50,15 @@ const Adder = ({isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic }) 
         // 받아온 music을 onAddMusic을 통해서 selectedPlaylist에 추가함
         console.log(music);
         if (music) {
+          //현재재생목록에 추가할지, selected Playlist에서 추가할지
+          const currentWorkingPlaylist = isCurrentPlaylistViewed? currentPlaylist : selectedPlaylist;
           // Check if the music already exists in the playlist
-          const isDuplicate = selectedPlaylist.list.some(existingMusic => existingMusic.path === music.path);
+          const isDuplicate = currentWorkingPlaylist.list.some(existingMusic => existingMusic.path === music.path);
 
           if (isDuplicate) {
             alert("이미 추가된 음악입니다.");
           } else {
-            onAddMusic(selectedPlaylist, music);
+            onAddMusic(currentWorkingPlaylist, music);
           }
         } else {
           alert("음악 파일의 정보를 읽어오는데 실패했습니다.");
@@ -60,6 +70,13 @@ const Adder = ({isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic }) 
       console.error("Error selecting music file:", error);
     }
   };
+
+  //현재재생목록 창 <-> selected Playlist 창 오갈때는 deleter가 안보이게 한다
+  useEffect(()=>{
+    if(isDeleteClick){
+      onIsDeleteClick();
+    }
+  },[isCurrentPlaylistViewed])
   
   return (
     <div className={styles["adder-wrapper"]}>
@@ -80,7 +97,7 @@ const Adder = ({isDeleteClick, onIsDeleteClick, selectedPlaylist, onAddMusic }) 
           <img
             src={imgRemoverClick ? removerClick : imgRemoverHover ? removerHover : remover}
             alt="remover"
-            onClick={() => {
+            onClick={() => {//실제 음악 별 삭제 기능은 SideContianerContents에서 구현한다
               setImgRemoverClick((prev) => !prev);
               onIsDeleteClick();
             }}
