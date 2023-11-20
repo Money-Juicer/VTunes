@@ -10,6 +10,22 @@ const SideController = () =>{
   const [isPlaylistMenuClick, setIsPlaylistMenuClick] = useState(false);
   const [isDeleteClick, setIsDeleteClick] = useState(false);//음악 삭제 위한 버튼 플래그
   
+  //p키 누르면 플레이리스트 메뉴 토글
+  const handleKeyPress = (event) => {
+    if (event.key === 'p' || event.key === 'P') {
+      handleIsPlaylistMenuClick();
+    }
+  }
+  useEffect(() => {
+    // 이벤트 리스너 등록
+    window.addEventListener('keydown', handleKeyPress);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
   const handleIsDeleteClick = () =>{
     setIsDeleteClick(prev=>!prev);
   }

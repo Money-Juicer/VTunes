@@ -1,6 +1,6 @@
 //react-redux store에서 ControlBar 으로 정보 받아오기
 import {useSelector, useDispatch} from 'react-redux';
-import { previousMusic, nextMusic, setIsCurrentPlaylistViewed } from '../modules/musicController';
+import { previousMusic, nextMusic, setIsCurrentPlaylistViewed, repeatCurrentMusic } from '../modules/musicController';
 import ControlBar from '../component/ControlBar';
 
 const ControlBarContainer = () => {
@@ -16,6 +16,7 @@ const ControlBarContainer = () => {
     currentMusic = {currentMusic}  
     onPrevMusic = {()=>dispatch(previousMusic())}
     onNextMusic = {()=>dispatch(nextMusic())}
+    onRepeatCurrentMusic = {(music)=>dispatch(repeatCurrentMusic(music))}
     isCurrentPlaylistViewed = {isCurrentPlaylistViewed}
     onIsCurrentPlaylistViewed = {(input)=>dispatch(setIsCurrentPlaylistViewed(input))}
     />

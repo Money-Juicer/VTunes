@@ -43,15 +43,15 @@ const Adder = ({
       if (allowedExtensions.includes(fileExtension)) {
         // 선택된 파일이 허용된 확장자인 경우에만 경로 설정
         console.log("Selected music file path:", selectedFilePath);
-  
+        //현재재생목록에 추가할지, selected Playlist에서 추가할지
+        const currentWorkingPlaylist = isCurrentPlaylistViewed? currentPlaylist : selectedPlaylist;
         // loadMusicFile 함수 실행
-        const music = await window.electronApi.loadMusicFile(selectedFilePath, selectedFilePath);
+        const music = await window.electronApi.loadMusicFile(currentWorkingPlaylist, selectedFilePath);
         
         // 받아온 music을 onAddMusic을 통해서 selectedPlaylist에 추가함
         console.log(music);
         if (music) {
-          //현재재생목록에 추가할지, selected Playlist에서 추가할지
-          const currentWorkingPlaylist = isCurrentPlaylistViewed? currentPlaylist : selectedPlaylist;
+
           // Check if the music already exists in the playlist
           const isDuplicate = currentWorkingPlaylist.list.some(existingMusic => existingMusic.path === music.path);
 

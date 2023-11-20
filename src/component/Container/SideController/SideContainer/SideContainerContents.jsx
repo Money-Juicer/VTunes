@@ -24,9 +24,12 @@ const SideContainerContents = ({
   const playlistToRender = isCurrentPlaylistViewed
     ? currentPlaylist
     : selectedPlaylist;
-  //뮤직 아이템을 클릭하면 해당 음악으로 현재 음악 설정 + 현재 플레이리스트 설정
-  const handleCurrent = (musicData) => {
-    //add playlist와 onCurrentPlaylist 순서를 바꾸면 안됨, 빈 현재재생목록 추가 -> selectPlaylist 내용을 현재재생목록에 카피
+    
+  /*뮤직 아이템을 클릭하면 해당 음악으로 현재 음악 설정 + 현재 플레이리스트 설정*/
+  const handleCurrent = async(musicData) => {
+    const result = await window.electronApi.deletePl("현재재생목록");
+    console.log(result);
+    //빈 현재재생목록 추가 -> selectPlaylist 내용을 현재재생목록에 카피
     const playlistExists = listOfPlaylist.some(
       (playlist) => playlist.name === "현재재생목록"
     );
@@ -36,15 +39,14 @@ const SideContainerContents = ({
     onCurrentPlaylist(selectedPlaylist);
     onCurrentMusic(musicData);
   };
-
-  //플레이리스트 내부에서 드래그 앤 드랍 처리
+  
+  /*플레이리스트 내부에서 드래그 앤 드랍 처리*/
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
     const items = Array.from(playlistToRender.list);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-
     // 플레이리스트 항목의 순서를 업데이트합니다.
     if (isCurrentPlaylistViewed) {
       onCurrentPlaylist({ ...playlistToRender, list: items });
@@ -53,7 +55,7 @@ const SideContainerContents = ({
     }
   };
 
-  //VTunes 바깥에서 드래그 앤 드랍 했을시
+  /*VTunes 바깥에서 드래그 앤 드랍 했을시*/
   const handleDrop = async(event) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
@@ -66,14 +68,15 @@ const SideContainerContents = ({
       const fileExtension = file.path.split('.').pop().toLowerCase();
   
       if (allowedExtensions.includes(fileExtension)) {
+        //현재재생목록에 추가할지, selected Playlist에서 추가할지
+        const currentWorkingPlaylist = isCurrentPlaylistViewed? currentPlaylist : selectedPlaylist;
         // loadMusicFile 함수 실행
-        const music = await window.electronApi.loadMusicFile(file.path, file.path);
+        const music = await window.electronApi.loadMusicFile(currentWorkingPlaylist, file.path);
         
         // 받아온 music을 onAddMusic을 통해서 추가
         console.log(music);
         if (music) {
-          //현재재생목록에 추가할지, selected Playlist에서 추가할지
-          const currentWorkingPlaylist = isCurrentPlaylistViewed? currentPlaylist : selectedPlaylist;
+
           // Check if the music already exists in the playlist
           const isDuplicate = currentWorkingPlaylist.list.some(existingMusic => existingMusic.path === music.path);
 
@@ -147,7 +150,8 @@ const SideContainerContents = ({
                                 isPlaying={
                                   isCurrentPlaylistViewed &&
                                   currentMusic &&
-                                  currentMusic === musicData
+                                  currentMusic.name === musicData.name&&
+                                  currentMusic.artist === musicData.artist
                                 }
                                 playlistToRender={playlistToRender}
                                 onDeleteMusic={onDeleteMusic}

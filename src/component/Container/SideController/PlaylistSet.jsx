@@ -32,7 +32,7 @@ const PlaylistSet = ({
   const handleAddPlaylist = () => {//playlist json 파일 추가
     setIsAddClick(false);
   
-    const playlistExists = listOfPlaylist.some(playlist => playlist.name === userInput);
+    const playlistExists = listOfPlaylist&&listOfPlaylist.some(playlist => playlist.name === userInput);
   
     if (playlistExists || userInput === "") {
       setUserInput("");
@@ -40,6 +40,7 @@ const PlaylistSet = ({
       setIsAddClick(true);
     } else {
       onAddPlaylist({ name: userInput, list: [] }); //redux store에 추가
+      setUserInput("");
     }
   };
   

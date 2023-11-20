@@ -30,8 +30,8 @@ app.whenReady().then(() => {
   createWindow();
 });
 
-/*렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain*/
-//dialog를 통해서 로컬 파일 경로 얻기
+/*************************렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain***************************/
+//dialog를 통해서 로컬 파일 경로 얻기 : ui에서 +클릭할시 이용
 ipcMain.handle('select-music-file', async (event) => {
   try {
     const result = await dialog.showOpenDialog({
@@ -52,11 +52,10 @@ ipcMain.handle('load-all', async (event) => {
     // ./resource 폴더에서 모든 JSON 파일 로드
     const files = fs.readdirSync('./resource').filter(file => file.endsWith('.json'));
     const playlists = files.map(file => {
-      const filePath = path.join(__dirname, 'resource', file); // 파일 경로를 구성하기 위해 path.join 사용
+      const filePath = path.join(__dirname, 'resource', file); 
       const data = fs.readFileSync(filePath, 'utf-8');
       return JSON.parse(data);
     });
-    console.log(playlists);
     return playlists;
   } catch (error) {
     console.error('모든 재생목록을 불러오는 중 오류 발생:', error);
@@ -65,7 +64,6 @@ ipcMain.handle('load-all', async (event) => {
 });
 ipcMain.handle('add-playlist', async (event, playlist) => {
   try {
-    console.log('Received addPlaylist event:', playlist);
     if(playlist.name !== "현재재생목록"){//현재재생목록 플레이리스트면 굳이 json파일을 만들지 않아도 된다
       await fs.promises.writeFile(`./resource/${playlist.name}.json`, JSON.stringify(playlist));
     }
@@ -77,7 +75,20 @@ ipcMain.handle('add-playlist', async (event, playlist) => {
 });
 ipcMain.handle('delete-playlist', async (event, name) => {
   try {
-    await fs.promises.unlink(path.join(__dirname, `./resource/${name}.json`));
+    if(name!=="현재재생목록"){
+      // Delete the JSON file
+      const jsonFilePath = path.join(__dirname, `./resource/${name}.json`);
+      await fs.promises.unlink(jsonFilePath);
+    }
+    // Check if the playlist folder exists
+    const playlistFolderPath = path.join(__dirname, `./resource/${name}`);
+    const folderExists = await fs.promises.access(playlistFolderPath, fs.constants.F_OK).then(() => true).catch(() => false);
+
+    // Delete the playlist folder if it exists
+    if (folderExists) {
+      await fs.promises.rmdir(playlistFolderPath, { recursive: true });
+    }
+
     event.sender.send('deletePlaylistResponse', true);
   } catch (error) {
     console.error('Error deleting playlist:', error);
@@ -104,50 +115,6 @@ ipcMain.handle('add-music', async (event, playlist, music) => {
     event.sender.send('addMusicResponse', false);
   }
 });
-
-ipcMain.handle('load-music-file', async (event, path, thumbnailPath) => {
-  try {
-    // loadMusicFile 함수 실행
-    const music = await loadMusicFile(path, thumbnailPath);
-    return music;
-  } catch (error) {
-    console.error('Error loading music file:', error);
-    event.sender.send('loadMusicErrorResponse', error.message);
-  }
-});
-async function loadMusicFile(path, thumbnailPath) {
-  try {
-    const metadata = await musicParser.parseFile(path, { duration: true });
-
-    const { lyrics, artist, album } = metadata.common;//picture가져오는거 임시로 지웠음
-    const { duration } = metadata.format;
-    let { title } = metadata.common;
-
-    if (!title) {
-      title = path.basename(path);
-    }
-
-    // if (picture && picture.length > 0) {                    picture 가져오는게 안된다
-    //   const image = picture[0];
-    //   fs.writeFileSync(`${thumbnailPath}/${title}.jpg`, image.data);
-    // }
-
-    // Music 객체 생성
-    const music = {
-      name: title, 
-      lyrics: lyrics,
-      artist: artist,
-      duration: parseInt(duration),
-      album: album, 
-      path: path
-    };
-
-    return music;
-  } catch (error) {
-    console.error('MP3 정보를 읽어오는 도중 에러 발생:', error.message);
-    throw error;
-  }
-};
 ipcMain.handle('delete-music', async (event, playlist, music) => {
   try {
     if(playlist&&playlist.name !== "현재재생목록"){//현재재생목록 이면 json파일에 접근하지 않아도 된다
@@ -162,13 +129,98 @@ ipcMain.handle('delete-music', async (event, playlist, music) => {
       // 파일 쓰기
       await fs.promises.writeFile(filePath, JSON.stringify(playlistData));
     }
+    // 이미지 파일 삭제 "현재재생목록"이어도 삭제
+    const playlistFolderPath = path.join(__dirname, `./resource/${playlist.name}`);
+    const imageFilePath = path.join(playlistFolderPath, `${music.name}.jpg`);
+
+    // Check if the image file exists before attempting to delete
+    const fileExists = await fs.promises.access(imageFilePath, fs.constants.F_OK).then(() => true).catch(() => false);
+    if (fileExists) {
+      await fs.promises.unlink(imageFilePath);
+    }
     event.sender.send('deleteMusicResponse', true);
   } catch (error) {
     console.error('Error deleting music:', error);
     event.sender.send('deleteMusicResponse', false);
   }
 });
-ipcMain.handle('change-playlist', async (event, playlist) => {
+
+ipcMain.handle('load-music-file', async (event, playlist, filePath) => {
+  try {
+    const playlistFolderPath = path.join(__dirname, `./resource/${playlist.name}`);
+    // loadMusicFile 함수 실행
+    const music = await loadMusicFile(filePath, playlistFolderPath);
+    return music;
+  } catch (error) {
+    console.error('Error loading music file:', error);
+    event.sender.send('loadMusicErrorResponse', error.message);
+  }
+});
+async function loadMusicFile( filePath,playlistFolderPath) {
+  try {
+    const metadata = await musicParser.parseFile(filePath, { duration: true });
+    console.log(metadata);
+    const { lyrics, artist, album, picture } = metadata.common;
+    const { duration } = metadata.format;
+    let { title } = metadata.common;
+
+    if (!title) {
+      const basename = path.basename(filePath);
+      title = basename.slice(0, basename.lastIndexOf('.'));
+    }
+
+    // playlist 폴더가 없으면 생성
+    try {
+      await fs.promises.mkdir(playlistFolderPath, { recursive: true });
+    } catch (mkdirError) {
+      console.error('Error creating playlist folder:', mkdirError);
+    }
+
+    if (picture && picture.length > 0) {
+      const image = picture[0];
+      const imageFileName = `${title}.jpg`; 
+
+      // 이미지를 playlist 폴더에 저장
+      const imgPath = path.join(playlistFolderPath, imageFileName);
+      fs.writeFileSync(imgPath, image.data);
+    }
+
+    // 이미지를 저장할 때 사용하는 절대 경로를 구성
+    const imgPath = path.join(playlistFolderPath, `${title}.jpg`);
+    console.log(imgPath);
+
+    const music = {
+      name: title,
+      lyrics: lyrics,
+      artist: artist,
+      duration: parseInt(duration),
+      album: album,
+      path: filePath,
+      imgPath: imgPath,
+    };
+    console.log("handler music:", music);
+
+    return music;
+  } catch (error) {
+    console.error('MP3 정보를 읽어오는 도중 에러 발생:', error.message);
+    throw error;
+  }
+}
+
+//이미지 파일의 절대경로를 받아서 img tag에 넣을 수 있는 걸로 변환
+ipcMain.handle('load-img-file', (event, imgPath) => {
+  try {
+    const imageData = fs.readFileSync(imgPath).toString('base64');
+    const imgSrc = `data:image/png;base64,${imageData}`;
+    return imgSrc;
+  } catch (error) {
+    console.error('Error loading music file image:', error.message);
+    return null;
+  }
+});
+
+
+ipcMain.handle('change-selected-playlist', async (event, playlist) => {
   try {
     if(playlist&& playlist.name !=="현재재생목록"){
       const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
@@ -185,6 +237,54 @@ ipcMain.handle('change-playlist', async (event, playlist) => {
     event.sender.send('changePlaylistResponse', false);
   }
 });
+//인자로 받은 플레이리스트의 이미지를 현재재생목록 폴더로 복사함
+ipcMain.handle('change-current-playlist', async (event, playlist) => {
+  try {
+    if (playlist && playlist.name !== "현재재생목록") {
+      // JSON 파일 읽기
+      const filePath = path.join(__dirname, `./resource/${playlist.name}.json`);
+      const fileData = await fs.promises.readFile(filePath, 'utf-8');
+      const playlistData = JSON.parse(fileData);
+
+      // 현재재생목록 폴더 경로 설정
+      const currentPlaylistFolderPath = path.join(__dirname, './resource/현재재생목록');
+      // 현재재생목록 폴더가 없으면 생성
+      await fs.promises.mkdir(currentPlaylistFolderPath, { recursive: true });
+
+      for (const music of playlistData.list) {
+        const sourceImagePath = path.join(__dirname, `./resource/${playlist.name}/${music.name}.jpg`);
+        const destinationImagePath = path.join(currentPlaylistFolderPath, `${music.name}.jpg`);
+
+        // 소스 파일이 존재하는지 확인
+        const sourceFileExists = await fs.promises.access(sourceImagePath, fs.constants.F_OK).then(() => true).catch(() => false);
+        if (!sourceFileExists) {
+          console.error(`소스 파일이 존재하지 않습니다: ${sourceImagePath}`);
+          continue; // 다음 반복으로 건너뛰기
+        }
+
+        // 목적지 폴더가 존재하는지 확인
+        const destinationFolderExists = await fs.promises.access(currentPlaylistFolderPath, fs.constants.F_OK).then(() => true).catch(() => false);
+        if (!destinationFolderExists) {
+          console.error(`목적지 폴더가 존재하지 않습니다: ${currentPlaylistFolderPath}`);
+          continue; // 다음 반복으로 건너뛰기
+        }
+
+        // 파일 복사 시도
+        try {
+          await fs.promises.copyFile(sourceImagePath, destinationImagePath);
+        } catch (copyError) {
+          console.error(`파일 복사 중 오류 발생: ${copyError.message}`);
+        }
+      }
+
+      event.sender.send('changePlaylistResponse', true);
+    }
+  } catch (error) {
+    console.error('플레이리스트 변경 중 오류 발생:', error);
+    event.sender.send('changePlaylistResponse', false);
+  }
+});
+
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();

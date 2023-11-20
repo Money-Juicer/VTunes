@@ -23,6 +23,8 @@
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
+    "sass": "^1.69.5",
+    "scss": "^0.2.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -30,7 +32,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron . && wait-on http://localhost:3000"
+    "electron": "electron . && wait-on http://localhost:3000",
+    "compile-sass": "node-sass src/styles -o src/styles"
   },
   "eslintConfig": {
     "extends": [
@@ -56,6 +59,7 @@
     "electron": "^27.0.2",
     "electron-builder": "^24.6.4",
     "electron-is-dev": "^2.0.0",
+    "node-sass": "^9.0.0",
     "wait-on": "^7.0.1"
   }
 }

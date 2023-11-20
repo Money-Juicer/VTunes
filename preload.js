@@ -5,10 +5,12 @@ contextBridge.exposeInMainWorld("electronApi", {
   loadAll: ()=> ipcRenderer.invoke("load-all"),
   addPl: (playlist) => ipcRenderer.invoke("add-playlist", playlist),
   deletePl: (name) => ipcRenderer.invoke("delete-playlist", name),
-  loadMusicFile: (path, thumbnailPath)=>ipcRenderer.invoke("load-music-file", path, thumbnailPath),
+  loadMusicFile: (playlist, path)=>ipcRenderer.invoke("load-music-file", playlist, path),
   addMusic: (playlist, music) => ipcRenderer.invoke("add-music", playlist, music),
   deleteMusic: (playlist, music)=>ipcRenderer.invoke("delete-music", playlist, music),
-  changePlaylist: (playlist) => ipcRenderer.invoke("change-playlist", playlist),
+  changeSelectedPlaylist: (playlist) => ipcRenderer.invoke("change-selected-playlist", playlist),
+  changeCurrentPlaylist: (playlist) => ipcRenderer.invoke("change-current-playlist", playlist),
+  loadImgFile: (imgPath) => ipcRenderer.invoke("load-img-file", imgPath),
 });
 
 ipcRenderer.on('savePlaylistResponse', (event, success) => {

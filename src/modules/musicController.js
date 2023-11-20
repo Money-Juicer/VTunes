@@ -8,7 +8,9 @@ const ADD_PLAYLIST_FAILURE = 'musicController/ADD_PLAYLIST_FAILURE';
 const DELETE_PLAYLIST_SUCCESS = 'musicController/DELETE_PLAYLIST_SUCCESS';
 const DELETE_PLAYLIST_FAILURE = 'musicController/DELETE_PLAYLIST_FAILURE';
 
-const SET_CURRENT_PLAYLIST = 'musicController/SET_CURRENT_PLAYLIST';
+const SET_CURRENT_PLAYLIST_SUCCESS = 'musicController/SET_CURRENT_PLAYLIST_SUCCESS';
+const SET_CURRENT_PLAYLIST_FAILURE = 'musicController/SET_CURRENT_PLAYLIST_FAILURE';
+
 const SET_SELECTED_PLAYLIST_SUCCESS = 'musicController/SET_SELECTED_PLAYLIST_SUCCESS';
 const SET_SELECTED_PLAYLIST_FAILURE = 'musicController/SET_SELECTED_PLAYLIST_FAILURE';
 
@@ -21,6 +23,7 @@ const DELETE_MUSIC_FAILURE = 'musicController/DELETE_MUSIC_FAILURE';
 const SET_CURRENT_MUSIC = 'musicController/SET_CURRENT_MUSIC';
 const PREVIOUS_MUSIC = 'musicController/PREVIOUS_MUSIC';
 const NEXT_MUSIC = 'musicController/NEXT_MUSIC';
+const REPEAT_CURRENT_MUSIC = 'musicController/REPEAT_CURRENT_MUSIC';
 
 const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
@@ -31,7 +34,7 @@ export const loadAll = () => async dispatch => {
   try {
     const result = await window.electronApi.loadAll();
     console.log('Load All Result:', result);
-    dispatch(loadAllSuccess(result)); // 수정된 부분
+    dispatch(loadAllSuccess(result)); 
   } catch (error) {
     dispatch(loadAllFailure());
     console.error('Error loading playlists:', error);
@@ -76,10 +79,19 @@ export const deleteMusic = (playlist, music) => async dispatch=> {
 }
 export const changeSelectedPlaylist = (playlist) => async dispatch=>{
   try{
-    await window.electronApi.changePlaylist(playlist);
+    await window.electronApi.changeSelectedPlaylist(playlist);
     dispatch(changeSelectedPlaylistSuccess(playlist));
   }catch(error){
     dispatch(changeSelectedPlaylistFailure(playlist));
+    console.error('Error changing selected playlist:', error);
+  }
+}
+export const changeCurrentPlaylist = (playlist) => async dispatch =>{
+  try{
+    await window.electronApi.changeCurrentPlaylist(playlist);
+    dispatch(changeCurrentPlaylistSuccess(playlist));
+  }catch(error){
+    dispatch(changeCurrentPlaylistFailure());
     console.error('Error changing selected playlist:', error);
   }
 }
@@ -107,16 +119,19 @@ export const deletePlaylistFailure = name => ({
   type : DELETE_PLAYLIST_FAILURE,
   name
 });
-export const changeCurrentPlaylist = playlist => ({
-  type : SET_CURRENT_PLAYLIST,
-  playlist
-});
 export const changeSelectedPlaylistSuccess = playlist => ({
   type : SET_SELECTED_PLAYLIST_SUCCESS,
   playlist
 });
 export const changeSelectedPlaylistFailure = () => ({
   type : SET_SELECTED_PLAYLIST_FAILURE,
+});
+export const changeCurrentPlaylistSuccess = playlist => ({
+  type : SET_CURRENT_PLAYLIST_SUCCESS,
+  playlist
+});
+export const changeCurrentPlaylistFailure = () => ({
+  type : SET_CURRENT_PLAYLIST_FAILURE,
 });
 export const changeCurrentMusic = music => ({
   type : SET_CURRENT_MUSIC,
@@ -146,6 +161,10 @@ export const previousMusic = () => ({
 });
 export const nextMusic = () => ({
   type : NEXT_MUSIC,
+});
+export const repeatCurrentMusic = (music) => ({
+  type : REPEAT_CURRENT_MUSIC,
+  music
 });
 export const modShuffleStatus = (input) => ({
   type : MOD_SHUFFLE_STATUS,
@@ -188,6 +207,7 @@ const initialState = {
     album : "",
     duration : 0,
     path : "",
+    imgPath: "",
   },
   repeatStatus : 0,
   shuffleStatus : 1,
@@ -229,19 +249,36 @@ function musicController(state = initialState, action){
     case DELETE_PLAYLIST_SUCCESS:
       let lop = state.listOfPlaylist;
       lop = lop.filter(playlist => playlist.name !== action.name);
+
+      // 만약 삭제된 플레이리스트가 현재 선택된 플레이리스트와 같다면 초기화
+      const selectedPlaylist = state.selectedPlaylist.name === action.name ? { name: "", list: [] } : state.selectedPlaylist;
+
       return {
         ...state,
         listOfPlaylist: lop,
+        selectedPlaylist: selectedPlaylist,
       };
+
     case DELETE_PLAYLIST_FAILURE:
       alert('Failed to delete playlist.');
       return state;
     
-    case SET_CURRENT_PLAYLIST:
+    case SET_CURRENT_PLAYLIST_SUCCESS:
+      const updatedListWithImgPath = action.playlist.list.map(music => ({
+        ...music,
+        imgPath: music.imgPath.replace(action.playlist.name, state.currentPlaylist.name),
+      }));
+
       return {
         ...state,
-        currentPlaylist : {...state.currentPlaylist, list: action.playlist.list}
-      };
+        currentPlaylist: {
+          ...state.currentPlaylist,
+          list: updatedListWithImgPath,
+        },
+    };
+    case SET_CURRENT_PLAYLIST_FAILURE:
+      alert('Failed to load image files to current playlist.');
+      return state;
     case SET_SELECTED_PLAYLIST_SUCCESS:
       return {
         ...state,
@@ -341,6 +378,7 @@ function musicController(state = initialState, action){
         let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
+          if(currentIndex + currentPlaylist.list.length === currentPlaylist.list.length) return state;
           let newIndex = (currentIndex - 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
           const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 이전 음악(맨처음이면 맨끝으로) 이건 수정할수도
     
@@ -361,6 +399,7 @@ function musicController(state = initialState, action){
         let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
+          if(currentIndex + 1 === currentPlaylist.list.length) return state;
           let newIndex = (currentIndex + 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
           const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 다음 음악(맨끝이면 맨처음으로)
     
@@ -371,6 +410,11 @@ function musicController(state = initialState, action){
         } 
       }
       return state;
+    case REPEAT_CURRENT_MUSIC:
+      return {
+        ...state,
+        currentMusic : action.music
+      };
 
     case MOD_SHUFFLE_STATUS:
       return {

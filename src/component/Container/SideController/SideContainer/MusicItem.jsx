@@ -5,8 +5,10 @@ import deleter from "../../../../assets/base/deleter.png";
 import deleterHover from "../../../../assets/hover/deleter.png";
 import deleterClick from "../../../../assets/onClick/deleter.png";
 import playing from "../../../../assets/base/playing.png";
+import DefaultAlbum from "../../../../assets/base/default_album.png";
 
 const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDeleteMusic, onCurrent, onCurrentMusic, onIsCurrentPlaylistViewed }) => {
+  const [imgFile, setImgFile] = useState(null);
   const [imgDeleterClick, setImgDeleterClick] = useState(false);
   const [imgDeleterHover, setImgDeleterHover] = useState(false);
 
@@ -22,6 +24,22 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDelete
       onIsCurrentPlaylistViewed(true);
     }
   }
+  
+  //음악이 이미지파일이 있고 음악의 이미지 파일의 경로에 대한 정보가 있으면 불러온다
+  useEffect(() => {
+    async function fetchData() {
+      if (musicData && musicData.imgPath && musicData.imgPath !== "") {
+        try {
+          const tmpImg = await window.electronApi.loadImgFile(musicData.imgPath);
+          setImgFile(tmpImg);
+        } catch (error) {
+          console.error("Error loading image:", error);
+        }
+      }
+    }
+    fetchData(); 
+  }, [musicData]);
+  
 
   return (
     <div className={styles["music-wrapper"]} onClick={handleMusicItemClick}>
@@ -46,7 +64,13 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDelete
             <img src={playing} alt="재생중"/>
           </div>
         )}
-        <img src={musicData.album} alt="앨범 이미지"/>
+        {
+          imgFile === null || imgFile === undefined ? (
+            <img src ={DefaultAlbum} alt="앨범 이미지" />
+          ):(
+            <img src={imgFile} alt="앨범 이미지" />
+          )
+        }
       </div>
       <div className={styles["music-info"]}>
         <div className={styles["name"]}>
