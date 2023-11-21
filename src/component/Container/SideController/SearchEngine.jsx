@@ -67,7 +67,7 @@ const SearchEngine = ({ selectedPlaylist, isPlMenuClick, onPlMenuClick, userInpu
               setImgPlMenuClick(true);
               setTimeout(() => setImgPlMenuClick(false), 100);
               onIsCurrentPlaylistViewed(false);
-            } else {
+            } else {//만약 selectedPlaylist가 없는 상태라면 현재재생목록을 보여줘야 한다
               onIsCurrentPlaylistViewed(true);
             }
           }}

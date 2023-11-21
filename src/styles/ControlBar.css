@@ -19,7 +19,12 @@
   background-color: #2f78ff !important; }
 
 .rhap_repeat-button {
-  color: #2f78ff; }
+  font-size: 0px;
+  width: 0px;
+  height: 0px;
+  color: #2f78ff;
+  margin-right: 6px;
+}
 
 .rhap_download-progress {
   background-color: #B0B9C7; }

@@ -29,6 +29,8 @@ const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
 
 const SET_IS_CURRENT_PLAYLIST_VIEWED = 'musicController/SET_IS_CURRENT_PLAYLIST_VIEWED';
+
+const SET_MUSIC_PLAYER_REF = 'musicController/SET_MUSIC_PLAYER_REF';
 ////////////////////////////////////동기화 + 비동기화 액션/////////////////////////////////////////////////////////
 export const loadAll = () => async dispatch => {
   try {
@@ -179,20 +181,25 @@ export const setIsCurrentPlaylistViewed = (input) => ({
   type : SET_IS_CURRENT_PLAYLIST_VIEWED,
   input
 })
+
+export const setMusicPlayerRef = (input) => ({
+  type: SET_MUSIC_PLAYER_REF,
+  input
+})
 ///////////////////////////////////////////////초기 상태//////////////////////////////////////////////
 
-//repeatStatue와 shuffleStatus
-const repeatStatus = {
-  REPEAT_ON: 2, 
-  REPEAT_CURRENT: 1,
-  REPEAT_OFF: 0,
-};
-Object.freeze(repeatStatus);
-const shuffleStatus = {
-  SHUFFLE_ON: 1,
-  SHUFFLE_OFF: 0,
-};
-Object.freeze(shuffleStatus);
+// //repeatStatue와 shuffleStatus
+// const repeatStatus = {
+//   ON: 2, 
+//   CURRENT: 1,
+//   OFF: 0,
+// };
+// Object.freeze(repeatStatus);
+// const shuffleStatus = {
+//   SHUFFLE_ON: 1,
+//   SHUFFLE_OFF: 0,
+// };
+// Object.freeze(shuffleStatus);
 
 
 //initial state
@@ -212,6 +219,7 @@ const initialState = {
   repeatStatus : 0,
   shuffleStatus : 1,
   isCurrentPlaylistViewed : true,
+  musicPlayerRef : null,
 }
 
 ///////////////////////////////////////////리듀서//////////////////////////////////////////////////
@@ -378,10 +386,8 @@ function musicController(state = initialState, action){
         let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
-          if(currentIndex + currentPlaylist.list.length === currentPlaylist.list.length) return state;
           let newIndex = (currentIndex - 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
-          const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 이전 음악(맨처음이면 맨끝으로) 이건 수정할수도
-    
+          const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 이전 음악(맨처음이면 맨끝으로)
           return {
             ...state,
             currentMusic: newMusic,
@@ -399,7 +405,6 @@ function musicController(state = initialState, action){
         let currentIndex = currentPlaylist.list.findIndex(music => music === currentMusic);
     
         if (currentIndex !== -1) {
-          if(currentIndex + 1 === currentPlaylist.list.length) return state;
           let newIndex = (currentIndex + 1 + currentPlaylist.list.length) % currentPlaylist.list.length;
           const newMusic = currentPlaylist.list[newIndex];//플레이리스트 내의 다음 음악(맨끝이면 맨처음으로)
     
@@ -433,7 +438,12 @@ function musicController(state = initialState, action){
         ...state,
         isCurrentPlaylistViewed : action.input
       };
-
+    
+    case SET_MUSIC_PLAYER_REF:
+      return{
+        ...state,
+        musicPlayerRef : action.input
+      };
     default :
       return state;
   }
