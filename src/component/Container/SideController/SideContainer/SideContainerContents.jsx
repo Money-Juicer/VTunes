@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ScrollList from "../../../common/ScrollList/ScrollList";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import MusicItem from "./MusicItem";

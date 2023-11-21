@@ -5,11 +5,12 @@ import DefaultAlbum from "../../assets/base/default_album.png";
 
 const Album = ({currentMusic}) =>{
   const [imgFile, setImgFile] = useState(null);
+  const [lyricsFile, setLyricsFile] = useState(null);
   const [isAlbumClick, setIsAlbumClick] = useState(false);
 
-  //음악이 이미지파일이 있고 음악의 이미지 파일의 경로에 대한 정보가 있으면 불러온다
   useEffect(() => {
-    async function fetchData() {
+    //음악이 이미지파일이 있고 음악의 이미지 파일의 경로에 대한 정보가 있으면 불러온다
+    async function fetchMusicFile() {
       if (currentMusic && currentMusic.imgPath && currentMusic.imgPath !== "") {
         try {
           const tmpImg = await window.electronApi.loadImgFile(currentMusic.imgPath);
@@ -19,11 +20,29 @@ const Album = ({currentMusic}) =>{
         }
       }
     }
-    fetchData(); 
+    //음원 파일이 있는 폴더에 같은 이름의 lrc파일이 존재하면 가져와서 lyrics로 설정
+    async function fetchLyricsFile(){
+      if(currentMusic && currentMusic.path && currentMusic.path !==""){
+        try{
+          const fileNameWithExtension = currentMusic.path.split("/").pop();
+          const fileName = fileNameWithExtension.slice(0, fileNameWithExtension.lastIndexOf("."));
+          
+          // 확장자를 ".lrc"로 변경한 새로운 경로 생성
+          const lrcFilePath = `${currentMusic.path.slice(0, currentMusic.path.lastIndexOf("/"))}/${fileName}.lrc`;
+
+          const lyricsFile = await window.electronApi.loadLyricsFile(lrcFilePath);
+          setLyricsFile(lyricsFile);
+        }catch(error){
+          console.error("Error loading lyrics:", error);
+        }
+      }
+    }
+    fetchMusicFile(); 
+    fetchLyricsFile();
   }, [currentMusic]);
   
   const toggleIsAlbumClick = () => {
-    if(currentMusic&&currentMusic.lyrics !== null && currentMusic.lyrics !== undefined){
+    if(currentMusic&&currentMusic.lyrics !== null && currentMusic.lyrics !== "" && currentMusic.lyrics !== undefined){
       setIsAlbumClick(prev => (!prev));
     }
   }
@@ -32,16 +51,22 @@ const Album = ({currentMusic}) =>{
       className={styles.album}
       style={{
         backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url(${imgFile || DefaultAlbum})`,
-        backgroundSize: 'cover', // 이미지가 찌그러지지 않고 컨테이너를 덮도록 설정
-        backgroundRepeat: 'no-repeat', // 이미지 반복을 막습니다.
-        backgroundPosition: 'center', // 이미지를 가운데 정렬합니다.
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat', 
+        backgroundPosition: 'center', 
       }}
     >
       {
         isAlbumClick ? (  
           <div className={styles.lyrics} onClick = {toggleIsAlbumClick}>
             <ScrollList>
-            {currentMusic.lyrics}
+              {lyricsFile !== null ? (
+                lyricsFile
+              ) : (
+                currentMusic &&
+                currentMusic.lyrics !== undefined &&
+                currentMusic.lyrics
+              )}
             </ScrollList>
           </div>
         ) : (

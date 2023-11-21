@@ -30,7 +30,7 @@ app.whenReady().then(() => {
   createWindow();
 });
 
-/*************************렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain***************************/
+/**************************************렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain************************************/
 //dialog를 통해서 로컬 파일 경로 얻기 : ui에서 +클릭할시 이용
 ipcMain.handle('select-music-file', async (event) => {
   try {
@@ -217,6 +217,34 @@ ipcMain.handle('load-img-file', (event, imgPath) => {
   }
 });
 
+ipcMain.handle('load-lyrics-file', async (event, lyricsPath) => {
+  try {
+    const lrcContent = fs.readFileSync(lyricsPath, 'utf-8');
+    //parseLRC호출
+    const parsedLyrics = parseLRC(lrcContent);
+    return parsedLyrics;
+  } catch (error) {
+    console.error('Error reading or parsing the LRC file:', error);
+    return null;
+  }
+});
+function parseLRC(lrcContent) {
+  const lines = lrcContent.split('\n');
+  const lyricObj = {};
+
+  for (const line of lines) {
+    const match = line.match(/\[(\d{2}):(\d{2})\.(\d{2})\](.+)/);
+    if (match) {
+      const minutes = parseInt(match[1], 10);
+      const seconds = parseInt(match[2], 10);
+      const milliseconds = parseInt(match[3], 10) * 10;
+      const time = minutes * 60 + seconds + milliseconds / 1000;
+      const text = match[4];
+      lyricObj[time] = text;
+    }
+  }
+  return lyricObj;
+}
 
 ipcMain.handle('change-selected-playlist', async (event, playlist) => {
   try {
