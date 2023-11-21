@@ -168,7 +168,6 @@ async function loadMusicFile( filePath,playlistFolderPath) {
       const basename = path.basename(filePath);
       title = basename.slice(0, basename.lastIndexOf('.'));
     }
-
     // playlist 폴더가 없으면 생성
     try {
       await fs.promises.mkdir(playlistFolderPath, { recursive: true });
@@ -187,7 +186,6 @@ async function loadMusicFile( filePath,playlistFolderPath) {
 
     // 이미지를 저장할 때 사용하는 절대 경로를 구성
     const imgPath = path.join(playlistFolderPath, `${title}.jpg`);
-    console.log(imgPath);
 
     const music = {
       name: title,

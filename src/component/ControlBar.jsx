@@ -69,12 +69,14 @@ const ControlBar = ({
   isCurrentPlaylistViewed, 
   onIsCurrentPlaylistViewed,
   modRepeatStatus,
+  onShuffle,
   onMusicPlayerRef,
 }) => {
   const musicPlayerRef = useRef();
   useEffect(() => {
     onMusicPlayerRef(musicPlayerRef);
-  }, [onMusicPlayerRef, musicPlayerRef]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [musicPlayerRef]);
   const [imgCurrentPlClick, setImgCurrentPlClick] = useState(false);
   const [imgCurrentPlHover, setImgCurrentPlHover] = useState(false);
   const [imgShuffleClick, setImgShuffleClick] = useState(false);
@@ -98,6 +100,7 @@ const ControlBar = ({
           onClick={() => {
             setImgShuffleClick(prev => !prev);
             setTimeout(() => setImgShuffleClick(false), 200);
+            onShuffle();
           }}
           onMouseEnter={() => setImgShuffleHover(true)}
           onMouseLeave={() => setImgShuffleHover(false)}

@@ -23,7 +23,9 @@ const Album = ({currentMusic}) =>{
   }, [currentMusic]);
   
   const toggleIsAlbumClick = () => {
-    setIsAlbumClick(prev => (!prev));
+    if(currentMusic&&currentMusic.lyrics !== null && currentMusic.lyrics !== undefined){
+      setIsAlbumClick(prev => (!prev));
+    }
   }
   return (
     <div

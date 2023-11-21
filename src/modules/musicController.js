@@ -25,7 +25,7 @@ const PREVIOUS_MUSIC = 'musicController/PREVIOUS_MUSIC';
 const NEXT_MUSIC = 'musicController/NEXT_MUSIC';
 const REPEAT_CURRENT_MUSIC = 'musicController/REPEAT_CURRENT_MUSIC';
 
-const MOD_SHUFFLE_STATUS = 'musicController/MOD_SHUFFLE_STATUS';
+const MOD_SHUFFLE = 'musicController/MOD_SHUFFLE';
 const MOD_REPEAT_STATUS = 'musicController/MOD_REPEAT_STATUS';
 
 const SET_IS_CURRENT_PLAYLIST_VIEWED = 'musicController/SET_IS_CURRENT_PLAYLIST_VIEWED';
@@ -168,9 +168,8 @@ export const repeatCurrentMusic = (music) => ({
   type : REPEAT_CURRENT_MUSIC,
   music
 });
-export const modShuffleStatus = (input) => ({
-  type : MOD_SHUFFLE_STATUS,
-  input
+export const modShuffle = () => ({
+  type : MOD_SHUFFLE,
 });
 export const modRepeatStatus = (input) => ({
   type : MOD_REPEAT_STATUS,
@@ -195,12 +194,6 @@ export const setMusicPlayerRef = (input) => ({
 //   OFF: 0,
 // };
 // Object.freeze(repeatStatus);
-// const shuffleStatus = {
-//   SHUFFLE_ON: 1,
-//   SHUFFLE_OFF: 0,
-// };
-// Object.freeze(shuffleStatus);
-
 
 //initial state
 const initialState = {
@@ -217,13 +210,19 @@ const initialState = {
     imgPath: "",
   },
   repeatStatus : 0,
-  shuffleStatus : 1,
   isCurrentPlaylistViewed : true,
   musicPlayerRef : null,
 }
 
 ///////////////////////////////////////////리듀서//////////////////////////////////////////////////
-
+//셔플 알고리즘
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 
 //reducer function
 function musicController(state = initialState, action){
@@ -421,10 +420,20 @@ function musicController(state = initialState, action){
         currentMusic : action.music
       };
 
-    case MOD_SHUFFLE_STATUS:
+    case MOD_SHUFFLE:
+      currentPlaylist = state.currentPlaylist;
+      const selectedPl = state.selectedPlaylist;
+      if(state.isCurrentPlaylistViewed === false){//만약 selectedPlaylist가 보여지는 상황이면
+        currentPlaylist = selectedPl;
+      }
+      const shuffledList = shuffleArray([...currentPlaylist.list]);
       return {
         ...state,
-        shuffleStatus : action.input
+        currentPlaylist: {
+          ...state.currentPlaylist,
+          list: shuffledList,
+        },
+        isCurrentPlaylistViewed: true,
       };
 
     case MOD_REPEAT_STATUS:

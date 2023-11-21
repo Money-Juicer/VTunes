@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import styles from "../../../styles/SearchEngine.module.css";
 import search from '../../../assets/base/search.png';
 import plMenu from '../../../assets/base/playlist_menu.png';
@@ -12,7 +12,7 @@ const SearchEngine = ({ selectedPlaylist, isPlMenuClick, onPlMenuClick, userInpu
   const [imgPlMenuClick, setImgPlMenuClick] = useState(false);
   const [imgSearchHover, setImgSearchHover] = useState(false);
   const [imgPlMenuHover, setImgPlMenuHover] = useState(false);
-  
+  const inputRef = useRef(null);
   const searchImage = imgSearchClick ? searchClick : imgSearchHover ? searchHover : search;
   const plMenuImage = imgPlMenuClick ? plMenuClick : imgPlMenuHover ? plMenuHover : plMenu;
 
@@ -20,6 +20,19 @@ const SearchEngine = ({ selectedPlaylist, isPlMenuClick, onPlMenuClick, userInpu
     const inputText = event.target.value;
     onUserInput(inputText);
   };
+  
+  //searchengine의 input을 클릭하지 않은 상태에서 p키를 누르면 playlistMenu껐다켰다
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'p' && inputRef.current !== document.activeElement) {
+        onPlMenuClick();
+      }
+    };
+    window.addEventListener('keypress', handleKeyPress);
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress);
+    };
+  }, [onPlMenuClick]);
 
   useEffect(() => {
     if(isPlMenuClick){//isPlMenuClick하면 userInput을 reset시킴
@@ -37,6 +50,7 @@ const SearchEngine = ({ selectedPlaylist, isPlMenuClick, onPlMenuClick, userInpu
       <div className={styles["search-engine-area"]}>
           <div className={styles["search-engine"]}>
           <input
+            ref={inputRef}
             type="text"
             placeholder="            Search Music in Playlist"
             value={userInput}

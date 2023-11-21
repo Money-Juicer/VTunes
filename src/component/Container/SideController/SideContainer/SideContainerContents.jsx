@@ -109,7 +109,7 @@ const SideContainerContents = ({
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {userInput &&
                 playlistToRender.list.filter((musicData) =>
-                  musicData.name.includes(userInput)
+                  musicData.name.toLowerCase().includes(userInput.toLowerCase())
                 ).length === 0 ? (
                   <div className={styles["music-wrapper"]}>
                     <span
@@ -126,7 +126,7 @@ const SideContainerContents = ({
                   playlistToRender.list
                     .filter(
                       (musicData) =>
-                        !userInput || musicData.name.includes(userInput)
+                        !userInput || musicData.name.toLowerCase().includes(userInput.toLowerCase())
                     )
                     .map((musicData, index) => (
                       <Draggable //드래그 가능한 컴포넌트
