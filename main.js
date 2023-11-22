@@ -12,14 +12,14 @@ function createWindow() {
     minWidth: 550,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js").replace(/\\/g, '/'),
+
     },
   });
   mainWindow.loadURL('http://localhost:3000');
-    // open-file 이벤트 처리
-  app.on('open-file', (event, filePath) => {
-    mainWindow.webContents.send('openFile', filePath);
-  });
+  // app.on('open-file', (event, filePath) => {
+  //   mainWindow.webContents.send('openFile', filePath);
+  // });
 }
 
 app.whenReady().then(() => {
@@ -33,17 +33,17 @@ app.whenReady().then(() => {
     }
   });
   createWindow();
-    // 앱이 준비되었을 때 open-file 이벤트 처리
-  app.on('open-file', (event, filePath) => {
-    mainWindow.webContents.send('openFile', filePath);
-  });
+  //   // 앱이 준비되었을 때 open-file 이벤트 처리
+  // app.on('open-file', (event, filePath) => {
+  //   mainWindow.webContents.send('openFile', filePath);
+  // });
 
-  // 활성화될 때 메인 창 생성 (macOS 전용)
-  app.on('activate', () => {
-    if (mainWindow === null) {
-      createWindow();
-    }
-  });
+  // // 활성화될 때 메인 창 생성 (macOS 전용)
+  // app.on('activate', () => {
+  //   if (mainWindow === null) {
+  //     createWindow();
+  //   }
+  // });
 });
 
 /**************************************렌더러 프로세스로부터 요청 받아서 메인 프로세스에서 작업 실행 : ipcMain************************************/

@@ -1,4 +1,4 @@
-import { addMusic } from './modules/musicController';
+// import { addMusic } from './modules/musicController';
 const { contextBridge, ipcRenderer } = require("electron")
 
 contextBridge.exposeInMainWorld("electronApi", {
@@ -24,12 +24,12 @@ ipcRenderer.on('savePlaylistResponse', (event, success) => {
   }
 });
 
-ipcRenderer.on('openFile', async (event, filePath) => {
-  try {
-    const music = await window.electronApi.loadMusicFile({ name: '현재재생목록', list: [] }, filePath);
+// ipcRenderer.on('openFile', async (event, filePath) => {
+//   try {
+//     const music = await window.electronApi.loadMusicFile({ name: '현재재생목록', list: [] }, filePath);
 
-    addMusic({ name: '현재재생목록', list: [] }, music);
-  } catch (error) {
-    console.error('Error handling openFile event:', error);
-  }
-});
+//     addMusic({ name: '현재재생목록', list: [] }, music);
+//   } catch (error) {
+//     console.error('Error handling openFile event:', error);
+//   }
+// });
