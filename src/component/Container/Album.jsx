@@ -42,10 +42,9 @@ const Album = ({currentMusic}) => {
   }, [currentMusic]);
 
   const toggleIsAlbumClick = () => {
-    setIsAlbumClick(prev => (!prev));
-    // if (lyricsFile || (currentMusic && currentMusic.lyrics !== null && currentMusic.lyrics !== undefined)) {
-    //   setIsAlbumClick(prev => (!prev));
-    // }
+    if (lyricsFile || (currentMusic && currentMusic.lyrics !== null && currentMusic.lyrics !== undefined)) {
+      setIsAlbumClick(prev => (!prev));
+    }
   }
 
   return (
