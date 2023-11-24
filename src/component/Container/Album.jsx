@@ -18,6 +18,8 @@ const Album = ({currentMusic}) =>{
         } catch (error) {
           console.error("Error loading image:", error);
         }
+      }else{
+        setImgFile(null);
       }
     }
     //음원 파일이 있는 폴더에 같은 이름의 lrc파일이 존재하면 가져와서 lyrics로 설정
