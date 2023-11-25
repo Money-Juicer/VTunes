@@ -1,54 +1,75 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../../styles/SideController.module.css";
-import SearchEngine from "./SideController/SearchEngine";
-import PlaylistSet from "./SideController/PlaylistSet";
 
-import SideContainerContainer from "../../containers/SideContainerContainer";
+import SideContainer from "./SideController/SideContainer";
+import PlaylistSetContainer from "../../containers/PlaylistSetContainer";
+import SearchEngineContainer from "../../containers/SearchEngineContainer";
 
 const SideController = () =>{
-  const [searchResult, setSearchResult] = useState({musics:[]});
-  const [isSearch, setIsSearch] = useState(false);
+  const searchInputRef = useRef(null);
+  const playlistSetInputRef = useRef(null);
+  const [userInput, setUserInput] = useState("");
   const [isPlaylistMenuClick, setIsPlaylistMenuClick] = useState(false);
-  const [isDeleteClick, setIsDeleteClick] = useState(false);
-  const [selectedPlaylist, setSelectedPlaylist] = useState({musics:[]});//contents에 보여질 선택된 플레이리스트(현재 재생과 무관)
-  
-  useEffect(()=>{
-    setIsPlaylistMenuClick(false);
-  },[selectedPlaylist])
+  const [isDeleteClick, setIsDeleteClick] = useState(false);//음악 삭제 위한 버튼 플래그
   
   const handleIsDeleteClick = () =>{
     setIsDeleteClick(prev=>!prev);
   }
   const handleIsPlaylistMenuClick = () =>{
+    if(isPlaylistMenuClick&&isDeleteClick) setIsDeleteClick(false);
     setIsPlaylistMenuClick(prev=>!prev);
   }
-  const handleSearchResult = (result) => {
-    setSearchResult(result);
-  }
-  const handleIsSearch = (flag)=>{
-    setIsSearch(flag);
-  }
-  const handleSelectedPlaylist = (playlist) =>{
-    setSelectedPlaylist(playlist);
-  }
+  const handleUserInput = (input) =>{
+    setUserInput(input);
 
+  }
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'p' && event.target !== searchInputRef.current) {
+        if(isPlaylistMenuClick&&isDeleteClick) setIsDeleteClick(false);
+        setIsPlaylistMenuClick(true);
+      }
+    };
+  
+    window.addEventListener('keypress', handleKeyPress);
+  
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleIsPlaylistMenuClick, searchInputRef]);
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'p' && event.target !== playlistSetInputRef.current) {
+        if(isPlaylistMenuClick&&isDeleteClick) setIsDeleteClick(false);
+        setIsPlaylistMenuClick(false);
+      }
+    };
+  
+    window.addEventListener('keypress', handleKeyPress);
+  
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handleIsPlaylistMenuClick, playlistSetInputRef]);
+  
   return (
     <div className={styles["side-controller"]}>
-      <SearchEngine
-        onPlMenuClick = {handleIsPlaylistMenuClick} 
-        onIsSearch = {handleIsSearch}
-        onSearchResult = {handleSearchResult} 
-        selectedPlaylist={selectedPlaylist}
+      <SearchEngineContainer
+        isPlMenuClick = {isPlaylistMenuClick}
+        onPlMenuClick = {handleIsPlaylistMenuClick}
+        userInput = {userInput}
+        onUserInput = {handleUserInput} 
+        inputRef={searchInputRef}
       />
       {isPlaylistMenuClick && (
-          <PlaylistSet onSelectedPlaylist={handleSelectedPlaylist}/>
+        <PlaylistSetContainer isPlMenuClick={isPlaylistMenuClick} onPlMenuClick={handleIsPlaylistMenuClick} inputRef={playlistSetInputRef}/>
       )}
-      <SideContainerContainer 
+      <SideContainer
         isDeleteClick= {isDeleteClick} 
         onIsDeleteClick={handleIsDeleteClick} 
-        isSearch={isSearch}
-        searchResult={searchResult}
-        selectedPlaylist = {selectedPlaylist}
+        userInput={userInput}
       />
     </div>
   );
