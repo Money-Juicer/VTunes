@@ -76,6 +76,7 @@ const PlaylistSet = ({
               value={userInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              data-testid="playlist-input"
             />
           </div>
           <div className={styles["adder-modal-button-area"]}>
