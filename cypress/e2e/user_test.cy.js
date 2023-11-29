@@ -152,6 +152,11 @@ describe('UI End-to-End Test', () => {
   it('Lyrics on Album Click', () =>{
     cy.visit('localhost:3000')
     cy.viewport(1200, 800)
+    cy.get('[cypress-testid="select_music"]').first()
+        .should("exist")
+        .click();
+
+
     cy.get('[cypress-testid="show_lyrics_button"]')
         .should("exist")
         .click()
@@ -174,10 +179,17 @@ describe('UI End-to-End Test', () => {
   it('Remove music from current playlist', () =>{
     cy.visit('localhost:3000')
     cy.viewport(1200, 800)
+    cy.get('[cypress-testid="playlist_menu"]')
+        .should("exist")
+        .click();
+    //select a playlist
+    cy.get('[cypress-testid="playlist_enter"]').first()
+        .should("exist")
+        .click();
     cy.get('[cypress-testid="remover_button"]')
         .should("exist")
         .click()
-    cy.get('[cypress-testid="delete_music_button"]')
+    cy.get('[cypress-testid="delete_music_button"]').first()
         .should("exist")
         .click();
 
@@ -190,7 +202,7 @@ describe('UI End-to-End Test', () => {
         .should("exist")
         .click();
     //select a playlist
-    cy.get('[cypress-testid"playlist_enter"]')
+    cy.get('[cypress-testid="playlist_enter"]').first()
         .should("exist")
         .click();
     cy.get('[cypress-testid="current_playlist_button_inactive"]')
@@ -209,7 +221,10 @@ describe('UI End-to-End Test', () => {
         .should("exist")
         .click();
     //PlaylistItem.jsx
-    cy.get('[cypress-testid="delete_button"]')
+    cy.get('[cypress-testid="delete_from_playlist_button"]').first()
+        .should("exist")
+        .click();
+    cy.get('[cypress-testid="playlist_menu"]')
         .should("exist")
         .click();
 

@@ -59,7 +59,7 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDelete
           />
         )}
       </div>
-      <div className={styles["music-album"]}>
+      <div className={styles["music-album"]} cypress-testid="select_music">
         {isPlaying && (
           <div className={styles["overlay"]}>
             <img src={playing} alt="재생중"/>

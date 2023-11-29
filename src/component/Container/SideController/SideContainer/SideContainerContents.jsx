@@ -4,6 +4,29 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import MusicItem from "./MusicItem";
 import styles from "../../../../styles/SideContainerContents.module.css";
 
+const toBeRendered = {
+  list : [
+    {
+      name : "music00",
+      lyrics : "test-lyrics",
+      artist :  "test-artist",
+      album : "test-album",
+      duration : 10,
+      path : "",
+      imgPath: "",
+    },
+    {
+      name : "music01",
+      lyrics : "test-lyrics",
+      artist :  "test-artist",
+      album : "test-album",
+      duration : 11,
+      path : "",
+      imgPath: "",
+    },
+  ],
+}
+
 const SideContainerContents = ({
   isDeleteClick,
   userInput,
@@ -44,7 +67,7 @@ const SideContainerContents = ({
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
-    const items = Array.from(playlistToRender.list);
+    const items = Array.from(toBeRendered.list);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     // 플레이리스트 항목의 순서를 업데이트합니다.
@@ -108,7 +131,7 @@ const SideContainerContents = ({
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 {userInput &&
-                playlistToRender.list.filter((musicData) =>
+                toBeRendered.list.filter((musicData) =>
                   musicData.name.toLowerCase().includes(userInput.toLowerCase())
                 ).length === 0 ? (
                   <div className={styles["music-wrapper"]}>
@@ -123,7 +146,7 @@ const SideContainerContents = ({
                     </span>
                   </div>
                 ) : (
-                  playlistToRender.list
+                  toBeRendered.list
                     .filter(
                       (musicData) =>
                         !userInput || musicData.name.toLowerCase().includes(userInput.toLowerCase())
