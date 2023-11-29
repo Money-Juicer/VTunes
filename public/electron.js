@@ -58,7 +58,7 @@ app.whenReady().then(() => {
         });
   });
 
-  createWindow();
+  //createWindow();
   //   // 앱이 준비되었을 때 open-file 이벤트 처리
   // app.on('open-file', (event, filePath) => {
   //   mainWindow.webContents.send('openFile', filePath);
