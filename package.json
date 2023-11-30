@@ -49,7 +49,7 @@
   "scripts": {
     "start": "concurrently \"npm run electron\" \"react-scripts start\"",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage --silent",
     "eject": "react-scripts eject",
     "electron": "electron . && wait-on http://localhost:3000",
     "electron-build": "npm run build --em.main=build/main.js && electron-builder build",

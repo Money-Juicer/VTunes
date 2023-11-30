@@ -17,7 +17,7 @@ function createWindow() {
     icon: path.join(__dirname, '/logo.png')
   });
 
-  mainWindow.setMenu(null);
+  //mainWindow.setMenu(null);
 
   if (isDev) {
     mainWindow.loadURL("http://localhost:3000");
@@ -25,7 +25,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, './index.html'));
   }
 
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {

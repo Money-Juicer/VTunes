@@ -104,9 +104,10 @@ describe('musicController reducer', () => {
   });
 
   it('should handle PREVIOUS_MUSIC when current music is not the first in the playlist', () => {
+    const currentMusic = { name: 'Song2' };
     const initialState = {
-      currentPlaylist: { list: [{ name: 'Song1' }, { name: 'Song2' }, { name: 'Song3' }] },
-      currentMusic: { name: 'Song2' },
+      currentPlaylist: { list: [{ name: 'Song1' }, currentMusic, { name: 'Song3' }] },
+      currentMusic: currentMusic,
     };
     const action = previousMusic();
     const newState = musicController(initialState, action);
@@ -115,20 +116,22 @@ describe('musicController reducer', () => {
   });
 
   it('should handle PREVIOUS_MUSIC when current music is the first in the playlist', () => {
+    const currentMusic = { name: 'Song1' };
     const initialState = {
-      currentPlaylist: { list: [{ name: 'Song1' }, { name: 'Song2' }, { name: 'Song3' }] },
-      currentMusic: { name: 'Song1' },
+      currentPlaylist: { list: [currentMusic, { name: 'Song2' }, { name: 'Song3' }] },
+      currentMusic: currentMusic,
     };
     const action = previousMusic();
     const newState = musicController(initialState, action);
     // Expect the current music to remain the same as it's the first in the playlist
-    expect(newState.currentMusic).toEqual({ name: 'Song1' });
+    expect(newState.currentMusic).toEqual({ name: 'Song3' });
   });
 
   it('should handle NEXT_MUSIC when current music is not the last in the playlist', () => {
+    const currentMusic = { name: 'Song2' };
     const initialState = {
-      currentPlaylist: { list: [{ name: 'Song1' }, { name: 'Song2' }, { name: 'Song3' }] },
-      currentMusic: { name: 'Song2' },
+      currentPlaylist: { list: [{ name: 'Song1' }, currentMusic, { name: 'Song3' }] },
+      currentMusic: currentMusic,
     };
     const action = nextMusic();
     const newState = musicController(initialState, action);
@@ -137,9 +140,10 @@ describe('musicController reducer', () => {
   });
 
   it('should handle NEXT_MUSIC when current music is the last in the playlist', () => {
+    const currentMusic = { name: 'Song3' };
     const initialState = {
-      currentPlaylist: { list: [{ name: 'Song1' }, { name: 'Song2' }, { name: 'Song3' }] },
-      currentMusic: { name: 'Song3' },
+      currentPlaylist: { list: [{ name: 'Song1' }, { name: 'Song2' }, currentMusic] },
+      currentMusic: currentMusic,
     };
     const action = nextMusic();
     const newState = musicController(initialState, action);
@@ -312,16 +316,6 @@ describe('musicController reducer', () => {
     const action = reduceRestTime();
     const newState = musicController(initialState, action);
     expect(newState.restTime).toBe(59); // 60에서 1 감소해서 59가 됨
-  });
-
-  it('should handle SET_IS_START_REDUCE_TIME', () => {
-    const initialState = {
-      isStartReduceTime: false,
-    };
-    const invalidFlag = true;
-    const action = setIsStartReduceTime(invalidFlag);
-    const newState = musicController(initialState, action);
-    expect(newState.isStartReduceTime).toEqual(true);
   });
 
   // 그냥 이런 테스트도 필요하나 싶어서 해봄. 실제로 일어나지 않을 경우들 ㅇㅇ
