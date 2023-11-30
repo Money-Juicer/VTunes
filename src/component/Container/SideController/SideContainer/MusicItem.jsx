@@ -42,7 +42,7 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDelete
   
 
   return (
-    <div className={styles["music-wrapper"]} onClick={handleMusicItemClick}>
+    <div className={styles["music-wrapper"]} onClick={handleMusicItemClick} cypress-testid="select_music">
       <div className={styles["delete-button-area"]}>
         {buttonFlag&&(
           <img
@@ -59,7 +59,7 @@ const MusicItem = ({buttonFlag, musicData, isPlaying, playlistToRender, onDelete
           />
         )}
       </div>
-      <div className={styles["music-album"]} cypress-testid="select_music">
+      <div className={styles["music-album"]}>
         {isPlaying && (
           <div className={styles["overlay"]}>
             <img src={playing} alt="재생중"/>

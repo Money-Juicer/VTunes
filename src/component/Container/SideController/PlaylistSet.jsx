@@ -34,8 +34,8 @@ const PlaylistSet = ({
     setIsAddClick(false);
   
     const playlistExists = listOfPlaylist&&listOfPlaylist.some(playlist => playlist.name === userInput);
-  
-    if (playlistExists || userInput === "") {
+
+    if (playlistExists || userInput.trim() === "") {
       setUserInput("");
       setIsAlert(true);
       setIsAddClick(true);
@@ -68,7 +68,7 @@ const PlaylistSet = ({
         name : "test00-playlist",
         list : [
           {
-            name : "music00",
+            name : "aaa",
             lyrics : "test-lyrics",
             artist :  "test-artist",
             album : "test-album",
@@ -115,7 +115,7 @@ const PlaylistSet = ({
 
     <div className={styles["playlist-set-wrapper"]}>
       {isAddClick&&(//new playlist클릭시 뜨는 창 : adder-modal
-        <div className={styles["adder-modal"]}>
+        <div className={styles["adder-modal"]} cypress-testid="playlist_header">
           <span>{isAlert ? "Invalid Playlist Name" : "New Playlist"}</span>
           <div className={styles["search-engine"]} cypress-testid="playlist_name_input">
             <input ref = {inputRef}
@@ -124,6 +124,7 @@ const PlaylistSet = ({
               value={userInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
+              maxLength={16}
             />
           </div>
           <div className={styles["adder-modal-button-area"]}>

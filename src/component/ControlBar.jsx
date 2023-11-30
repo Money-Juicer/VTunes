@@ -14,6 +14,7 @@ import shuffleIconClick from '../assets/onClick/shuffle.png';
 import repCurrBase from "../assets/base/Repeat_Current.png"
 import repOnBase from "../assets/base/Repeat_On.png"
 import repOffBase from "../assets/base/Repeat_Off.png"
+import defaultMusic from "../assets/attention.mp3"
 
   //Enum for repeat states
   const repeatStates = Object.freeze({
@@ -131,7 +132,7 @@ const ControlBar = ({
         </div>
       </div>
       <MusicPlayer ref = {musicPlayerRef}
-        autoPlay src={currentMusic? "local://".concat(currentMusic.path) : ""}
+        autoPlay src={defaultMusic}
         showJumpControls={false}
         showSkipControls={true}
         onClickPrevious={() => {

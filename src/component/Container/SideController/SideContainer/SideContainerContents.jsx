@@ -134,7 +134,7 @@ const SideContainerContents = ({
                 toBeRendered.list.filter((musicData) =>
                   musicData.name.toLowerCase().includes(userInput.toLowerCase())
                 ).length === 0 ? (
-                  <div className={styles["music-wrapper"]}>
+                  <div className={styles["music-wrapper"]} cypress-testid="no_results_found">
                     <span
                       style={{
                         width: "100%",
