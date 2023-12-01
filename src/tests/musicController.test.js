@@ -14,7 +14,6 @@ import musicController, {
   previousMusic,
   nextMusic,
   repeatCurrentMusic,
-  modRepeatStatus,
   modShowTimerBox,
   setIsCurrentPlaylistViewed,
   setMusicPlayerRef,
@@ -111,7 +110,6 @@ describe('musicController reducer', () => {
     };
     const action = previousMusic();
     const newState = musicController(initialState, action);
-    // Expect the current music to remain the same as it's the first in the playlist
     expect(newState.currentMusic).toEqual({ name: 'Song1' });
   });
 
@@ -123,7 +121,6 @@ describe('musicController reducer', () => {
     };
     const action = previousMusic();
     const newState = musicController(initialState, action);
-    // Expect the current music to remain the same as it's the first in the playlist
     expect(newState.currentMusic).toEqual({ name: 'Song3' });
   });
 
@@ -135,7 +132,6 @@ describe('musicController reducer', () => {
     };
     const action = nextMusic();
     const newState = musicController(initialState, action);
-    // Expect the current music to remain the same as it's the last in the playlist
     expect(newState.currentMusic).toEqual({ name: 'Song3' });
   });
 
@@ -147,7 +143,6 @@ describe('musicController reducer', () => {
     };
     const action = nextMusic();
     const newState = musicController(initialState, action);
-    // Expect the current music to remain the same as it's the last in the playlist
     expect(newState.currentMusic).toEqual({ name: 'Song1' });
   });
 
@@ -213,17 +208,7 @@ describe('musicController reducer', () => {
     expect(newState.listOfPlaylist).toEqual(initialState.listOfPlaylist);
   });
   
-    /* shuffle은 매번 다른 리스트로 나와서 테스트할 수 없다. */
-    // it('should handle MOD_SHUFFLE', () => {
-    //   const initialState = {
-    //     currentPlaylist: { name: 'CurrentPlaylist', list: [{ name: 'Song1' }, { name: 'Song2' }] },
-    //     isCurrentPlaylistViewed: true,
-    //   };
-    //   const action = modShuffle();
-    //   const newState = musicController(initialState, action);
-    //   expect(newState.currentPlaylist.list).not.toEqual(initialState.currentPlaylist.list);
-    // });
-//TODO
+  // 
   it('should handle REPEAT_CURRENT_MUSIC', () => {
     const initialState = {
       listOfPlaylist: [
@@ -237,24 +222,8 @@ describe('musicController reducer', () => {
     };
     const action = repeatCurrentMusic({ name: 'Song1' });
     const newState = musicController(initialState, action);
-    //TODO 다음 곡으로 자동으로 넘어가는 기능 실행시켜서 안 넘어가는지 보고 싶은데 방법이 없나..?
-    // const action2 = nextMusic();
-    // const newState2 = musicController(newState, action2);
-    // expect(newState2.currentMusic).toEqual({ name: 'Song1' });
-    expect(newState.currentMusic).toEqual({ name: 'Song1' }); // 얘는 일단 그냥 통과하라고 넣어둠
-    //expect(newState.repeatStatus).toEqual(1); //TODO 근데 repeat status도 안바뀌는뎁쇼?
+    expect(newState.currentMusic).toEqual({ name: 'Song1' }); 
   });
-
-  // 자동으로 넘어가는 기능 몰라서 얘도 테스트 못함
-  // it('should handle MOD_REPEAT_STATUS', () => {
-  //   const initialState = {
-  //     repeatStatus: 0,
-  //   };
-  //   const newRepeatStatus = 2;
-  //   const action = modRepeatStatus(newRepeatStatus);
-  //   const newState = musicController(initialState, action);
-  //   expect(newState.repeatStatus).toEqual(newRepeatStatus);
-  // });
 
   it('should handle MOD_SHOW_TIMER_BOX', () => {
     const initialState = {
@@ -318,57 +287,23 @@ describe('musicController reducer', () => {
     expect(newState.restTime).toBe(59); // 60에서 1 감소해서 59가 됨
   });
 
-  // 그냥 이런 테스트도 필요하나 싶어서 해봄. 실제로 일어나지 않을 경우들 ㅇㅇ
-  // it('should handle DELETE_MUSIC_SUCCESS with music not in playlist', () => {
-  //   const initialState = {
-  //     listOfPlaylist: [
-  //       { name: 'Playlist1', list: [{ name: 'Song1' }, { name: 'Song2' }] },
-  //       { name: 'Playlist2', list: [] },
-  //     ],
-  //     selectedPlaylist: { name: 'Playlist1', list: [{ name: 'Song1' }, { name: 'Song2' }] },
-  //     currentPlaylist: { name: 'CurrentPlaylist', list: [{ name: 'Song1' }, { name: 'Song2' }] },
-  //     currentMusic: { name: 'Song3' }, // Not in the playlist
-  //   };
-  //   const musicToDelete = { name: 'Song3' };
-  //   const action = deleteMusicSuccess(initialState.listOfPlaylist[0], musicToDelete);
-  //   const newState = musicController(initialState, action);
-  //   expect(newState.listOfPlaylist[0].list).not.toContain(musicToDelete);
-  //   expect(newState.selectedPlaylist.list).not.toContain(musicToDelete);
-  //   expect(newState.currentPlaylist.list).not.toContain(musicToDelete);
-  //   expect(newState.currentMusic).toEqual(initialState.currentMusic);
-  // });
+  it('should handle DELETE_MUSIC_SUCCESS with music not in playlist', () => {
+    const initialState = {
+      listOfPlaylist: [
+        { name: 'Playlist1', list: [{ name: 'Song1' }, { name: 'Song2' }] },
+        { name: 'Playlist2', list: [] },
+      ],
+      selectedPlaylist: { name: 'Playlist1', list: [{ name: 'Song1' }, { name: 'Song2' }] },
+      currentPlaylist: { name: 'CurrentPlaylist', list: [{ name: 'Song1' }, { name: 'Song2' }] },
+      currentMusic: { name: 'Song3' }, // Not in the playlist
+    };
+    const musicToDelete = { name: 'Song3' };
+    const action = deleteMusicSuccess(initialState.listOfPlaylist[0], musicToDelete);
+    const newState = musicController(initialState, action);
+    expect(newState.listOfPlaylist[0].list).not.toContain(musicToDelete);
+    expect(newState.selectedPlaylist.list).not.toContain(musicToDelete);
+    expect(newState.currentPlaylist.list).not.toContain(musicToDelete);
+    expect(newState.currentMusic).toEqual(initialState.currentMusic);
+  });
 
 });
-
-// 아래는 굳이 할 필요 없을 듯.
-// // You can add similar tests for action creators
-// describe('musicController action creators', () => {
-//   // Example for loadAllSuccess
-//   it('should create an action to handle LOAD_ALL_SUCCESS', () => {
-//     const playlists = [{ name: 'Playlist1', list: [] }];
-//     const expectedAction = { type: 'musicController/LOAD_ALL_SUCCESS', playlists };
-//     expect(loadAllSuccess(playlists)).toEqual(expectedAction);
-//   });
-
-//   it('should create an action to handle DELETE_PLAYLIST_SUCCESS', () => {
-//     const expectedAction = { type: 'musicController/DELETE_PLAYLIST_SUCCESS', name: 'Playlist1' };
-//     expect(deletePlaylistSuccess('Playlist1')).toEqual(expectedAction);
-//   });
-
-//   it('should create an action to handle DELETE_PLAYLIST_FAILURE', () => {
-//     const expectedAction = { type: 'musicController/DELETE_PLAYLIST_FAILURE' };
-//     expect(deletePlaylistFailure()).toEqual(expectedAction);
-//   });
-
-//   it('should create an action to handle CHANGE_SELECTED_PLAYLIST_SUCCESS', () => {
-//     const expectedAction = { type: 'musicController/SET_SELECTED_PLAYLIST_SUCCESS', playlist: { name: 'Playlist2', list: [] } };
-//     expect(changeSelectedPlaylistSuccess({ name: 'Playlist2', list: [] })).toEqual(expectedAction);
-//   });
-
-//   it('should create an action to handle CHANGE_SELECTED_PLAYLIST_FAILURE', () => {
-//     const expectedAction = { type: 'musicController/SET_SELECTED_PLAYLIST_FAILURE' };
-//     expect(changeSelectedPlaylistFailure()).toEqual(expectedAction);
-//   });
-
-//   // Add more test cases for other action creators
-// });
