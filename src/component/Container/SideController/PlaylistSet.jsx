@@ -35,7 +35,7 @@ const PlaylistSet = ({
   
     const playlistExists = listOfPlaylist&&listOfPlaylist.some(playlist => playlist.name === userInput);
   
-    if (playlistExists || userInput === "") {
+    if (playlistExists || userInput.trim() === "" || userInput.trim() === "현재재생목록") {
       setUserInput("");
       setIsAlert(true);
       setIsAddClick(true);
@@ -77,6 +77,7 @@ const PlaylistSet = ({
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               data-testid="playlist-input"
+              maxLength={16}
             />
           </div>
           <div className={styles["adder-modal-button-area"]}>
